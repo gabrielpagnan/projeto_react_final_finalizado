@@ -7,37 +7,55 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [erro, setErro] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setErro("");
+    setLoading(true);
 
-    // Verificar se é o admin padrão
-    if (username === "admin" && password === "1234") {
-      localStorage.setItem("logado", "true");
-      localStorage.setItem("usuarioAtual", JSON.stringify({
-        nome: "Administrador",
-        email: "admin",
-        perfil: "admin"
-      }));
-      navigate("/");
-      return;
-    }
+    try {
+      // Buscar usuários no banco de dados
+      const response = await fetch("http://localhost:3000/usuarios");
+      const usuarios = await response.json();
+      
+      // Verificar se é o admin padrão
+      if (username === "admin@barbearia.com" && password === "admin123") {
+        const admin = usuarios.find(u => u.email === "admin@barbearia.com");
+        if (admin) {
+          localStorage.setItem("logado", "true");
+          localStorage.setItem("usuarioAtual", JSON.stringify({
+            id: admin.id,
+            nome: admin.nome,
+            email: admin.email,
+            tipo: admin.tipo
+          }));
+          navigate("/");
+          return;
+        }
+      }
 
-    // Verificar usuários registrados
-    const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-    const usuario = usuarios.find(u => u.email === username && u.senha === password);
+      // Verificar usuários registrados
+      const usuario = usuarios.find(u => u.email === username && u.senha === password);
 
-    if (usuario) {
-      localStorage.setItem("logado", "true");
-      localStorage.setItem("usuarioAtual", JSON.stringify({
-        nome: usuario.nome,
-        email: usuario.email,
-        perfil: "usuario"
-      }));
-      navigate("/");
-    } else {
-      setErro("E-mail ou senha inválidos");
+      if (usuario) {
+        localStorage.setItem("logado", "true");
+        localStorage.setItem("usuarioAtual", JSON.stringify({
+          id: usuario.id,
+          nome: usuario.nome,
+          email: usuario.email,
+          tipo: usuario.tipo
+        }));
+        navigate("/");
+      } else {
+        setErro("E-mail ou senha inválidos");
+      }
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+      setErro("Erro de conexão. Verifique se o servidor está rodando.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,6 +63,8 @@ const Login = () => {
     <div className="container">
       <form onSubmit={handleSubmit}>
         <h1>Acesse o sistema</h1>
+        <p className="login-subtitle">Faça login para continuar</p>
+        
         <div className="input-field">
           <input
             type="text"
@@ -72,11 +92,18 @@ const Login = () => {
           <a href="#">Esqueceu sua senha?</a>
         </div>
         {erro && <p style={{ color: "red" }}>{erro}</p>}
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Entrando..." : "Login"}
+        </button>
         <div className="signup-link">
           <p>
             Não tem uma conta? <Link to="/register">Registrar</Link>
           </p>
+        </div>
+        
+        <div className="admin-info">
+          <p><strong>Admin:</strong> admin@barbearia.com / admin123</p>
+          <p><strong>Cliente:</strong> joao@email.com / 123456</p>
         </div>
       </form>
     </div>

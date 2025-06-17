@@ -1,16 +1,180 @@
-<<<<<<< HEAD
-# React + Vite
+# Barbearia Express - Sistema de Gestão
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Um sistema completo para gestão de barbearias, desenvolvido em React com funcionalidades de agendamento, gestão de profissionais e serviços.
 
-Currently, two official plugins are available:
+## 🚀 Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📅 Agendamentos
+- Criar novos agendamentos
+- Selecionar cliente, profissional e serviço
+- Definir data e horário
+- Adicionar observações
+- Visualizar status dos agendamentos (pendente, confirmado, cancelado)
 
-## Expanding the ESLint configuration
+### 👨‍💼 Profissionais
+- Cadastrar novos profissionais
+- Definir especialidades
+- Configurar horários de trabalho por dia da semana
+- Editar e excluir profissionais
+- Visualizar informações completas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# trabalho-react
->>>>>>> 52f0dcabaa1634efcf0052ccd15095cc82fd1872
+### ✂️ Serviços
+- Cadastrar serviços oferecidos
+- Definir preços e durações
+- Editar e excluir serviços
+- Visualizar lista completa de serviços
+
+### 👥 Usuários
+- Gestão de clientes e administradores
+- Controle de acesso baseado em tipo de usuário
+- Sistema de login e registro
+
+## 🛠️ Tecnologias Utilizadas
+
+- **React 18** - Framework principal
+- **React Router DOM** - Roteamento
+- **React Icons** - Ícones
+- **JSON Server** - API REST simulada
+- **Vite** - Build tool
+- **CSS3** - Estilização
+
+## 📦 Instalação
+
+1. Clone o repositório:
+```bash
+git clone [url-do-repositorio]
+cd barbearia-express
+```
+
+2. Instale as dependências:
+```bash
+npm install
+```
+
+3. Inicie o servidor de dados (JSON Server):
+```bash
+npm run server
+```
+
+4. Em outro terminal, inicie o servidor de desenvolvimento:
+```bash
+npm run dev
+```
+
+5. Acesse o sistema em `http://localhost:5173`
+
+## 🗄️ Estrutura de Dados
+
+O sistema utiliza um banco de dados JSON com as seguintes entidades:
+
+### Usuários
+```json
+{
+  "id": 1,
+  "nome": "João Silva",
+  "email": "joao@email.com",
+  "senha": "123456",
+  "tipo": "cliente"
+}
+```
+
+### Profissionais
+```json
+{
+  "id": 1,
+  "nome": "Carlos Barbosa",
+  "especialidade": "Corte masculino",
+  "telefone": "(11) 99999-9999",
+  "email": "carlos@barbearia.com",
+  "horarios": [
+    {
+      "dia": "segunda",
+      "inicio": "09:00",
+      "fim": "18:00"
+    }
+  ]
+}
+```
+
+### Serviços
+```json
+{
+  "id": 1,
+  "nome": "Corte Masculino",
+  "descricao": "Corte tradicional masculino",
+  "preco": 35.00,
+  "duracao": 30
+}
+```
+
+### Agendamentos
+```json
+{
+  "id": 1,
+  "clienteId": 1,
+  "profissionalId": 1,
+  "servicoId": 1,
+  "data": "2024-01-15",
+  "horario": "14:00",
+  "status": "confirmado",
+  "observacoes": "Primeira vez"
+}
+```
+
+## 🔐 Credenciais de Acesso
+
+### Administrador
+- Email: maria@email.com
+- Senha: 123456
+
+### Cliente
+- Email: joao@email.com
+- Senha: 123456
+
+## 📱 Responsividade
+
+O sistema é totalmente responsivo e funciona em:
+- Desktop
+- Tablet
+- Mobile
+
+## 🎨 Design
+
+- Interface moderna e intuitiva
+- Gradientes e animações suaves
+- Cards com efeitos hover
+- Formulários modais
+- Status coloridos para agendamentos
+
+## 🔧 Scripts Disponíveis
+
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Gera build de produção
+- `npm run server` - Inicia o JSON Server
+- `npm run preview` - Visualiza build de produção
+- `npm run lint` - Executa o linter
+
+## 📋 Próximas Funcionalidades
+
+- [ ] Relatórios e estatísticas
+- [ ] Notificações por email/SMS
+- [ ] Sistema de pagamentos
+- [ ] Galeria de fotos dos trabalhos
+- [ ] Avaliações e comentários
+- [ ] Backup automático dos dados
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+## 👨‍💻 Desenvolvedor
+
+Desenvolvido com ❤️ para facilitar a gestão de barbearias.

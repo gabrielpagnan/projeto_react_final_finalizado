@@ -14,6 +14,7 @@ const Register = () => {
   });
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,55 +25,86 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setErro("");
     setSucesso("");
+    setLoading(true);
 
     // Validações básicas
     if (formData.senha !== formData.confirmarSenha) {
       setErro("As senhas não coincidem");
+      setLoading(false);
       return;
     }
 
     if (formData.senha.length < 6) {
       setErro("A senha deve ter pelo menos 6 caracteres");
+      setLoading(false);
       return;
     }
 
     if (!formData.email.includes("@")) {
       setErro("Email inválido");
+      setLoading(false);
       return;
     }
 
-    // Simular registro bem-sucedido
-    setSucesso("Conta criada com sucesso! Redirecionando para o login...");
-    
-    // Salvar dados do usuário (em um sistema real, seria enviado para uma API)
-    const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-    const novoUsuario = {
-      id: Date.now(),
-      nome: formData.nome,
-      email: formData.email,
-      cpf: formData.cpf,
-      telefone: formData.telefone,
-      senha: formData.senha, // Em produção, deve ser criptografada
-      dataCriacao: new Date().toISOString()
-    };
-    
-    usuarios.push(novoUsuario);
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    try {
+      // Verificar se o email já existe
+      const response = await fetch("http://localhost:3000/usuarios");
+      const usuarios = await response.json();
+      
+      const emailExiste = usuarios.find(u => u.email === formData.email);
+      if (emailExiste) {
+        setErro("Este email já está cadastrado");
+        setLoading(false);
+        return;
+      }
 
-    // Redirecionar para login após 2 segundos
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
+      // Criar novo usuário
+      const novoUsuario = {
+        nome: formData.nome,
+        email: formData.email,
+        cpf: formData.cpf,
+        telefone: formData.telefone,
+        senha: formData.senha,
+        tipo: "cliente", // Sempre será cliente
+        dataCriacao: new Date().toISOString()
+      };
+
+      // Salvar no banco de dados
+      const saveResponse = await fetch("http://localhost:3000/usuarios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(novoUsuario),
+      });
+
+      if (saveResponse.ok) {
+        setSucesso("Conta criada com sucesso! Redirecionando para o login...");
+        
+        // Redirecionar para login após 2 segundos
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        setErro("Erro ao criar conta. Tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro ao registrar:", error);
+      setErro("Erro de conexão. Verifique se o servidor está rodando.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="register-container">
       <form onSubmit={handleSubmit} className="register-form">
-        <h1>Criar Conta</h1>
+        <h1>Criar Conta de Cliente</h1>
+        <p className="register-subtitle">Cadastre-se para agendar seus horários</p>
         
         <div className="input-field">
           <input
@@ -149,7 +181,9 @@ const Register = () => {
         {erro && <p className="error-message">{erro}</p>}
         {sucesso && <p className="success-message">{sucesso}</p>}
 
-        <button type="submit">Criar Conta</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Criando conta..." : "Criar Conta"}
+        </button>
         
         <div className="login-link">
           <p>

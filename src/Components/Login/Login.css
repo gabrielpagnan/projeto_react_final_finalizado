@@ -1,65 +1,90 @@
 .container {
-  width: 450px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+  padding: 20px;
+}
+
+.container form {
+  background: white;
   padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
 .container h1 {
-  text-align: center;
-  font-size: 30px;
-  color: #ffff;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
-.container .input-field {
+.login-subtitle {
+  color: #7f8c8d;
+  margin-bottom: 30px;
+  font-size: 1rem;
+}
+
+.input-field {
   position: relative;
-  width: 100%;
-  height: 50px;
-  margin: 30px auto;
+  margin-bottom: 25px;
 }
 
 .input-field input {
   width: 100%;
-  height: 100%;
-  background: transparent;
-  outline: none;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 40px;
-  font-size: 16px;
-  color: #fff;
-  padding: 20px 45px 20px 25px;
+  padding: 15px 15px 15px 50px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
-.input-field input::placeholder {
-  color: #fff;
+.input-field input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .input-field .icon {
   position: absolute;
-  right: 25px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 16px;
-  color: #fff;
+  color: #7f8c8d;
+  font-size: 1.2rem;
 }
 
-.container .recall-forget {
+.recall-forget {
   display: flex;
   justify-content: space-between;
-  font-size: 14.5px;
-  margin: -15px 0 15px;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 0.9rem;
 }
 
-.recall-forget label input {
-  accent-color: #fff;
-  margin-right: 4px;
+.recall-forget label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #7f8c8d;
+  cursor: pointer;
+}
+
+.recall-forget input[type="checkbox"] {
+  width: auto;
+  margin: 0;
 }
 
 .recall-forget a {
-  color: #fff;
+  color: #667eea;
   text-decoration: none;
+  font-weight: 500;
 }
 
 .recall-forget a:hover {
@@ -68,41 +93,74 @@
 
 .container button {
   width: 100%;
-  height: 45px;
-  background: #fff;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
   border: none;
-  outline: none;
-  border-radius: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 16px;
-  color: #333;
-  font-weight: 700;
-  text-shadow: none;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
 }
 
-.container .signup-link {
-  font-size: 14.5px;
-  text-align: center;
-  margin: 20px 0 15px;
+.container button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
-.signup-link p a {
-  color: #fff;
+.container button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.signup-link {
+  margin-top: 20px;
+  color: #7f8c8d;
+}
+
+.signup-link a {
+  color: #667eea;
   text-decoration: none;
   font-weight: 600;
 }
 
-.signup-link p a:hover {
+.signup-link a:hover {
   text-decoration: underline;
 }
 
-.erro {
-  background-color: rgba(255, 0, 0, 0.1);
-  color: #ff4d4d;
-  border: 1px solid #ff4d4d;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  text-align: center;
+.admin-info {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  text-align: left;
+}
+
+.admin-info p {
+  margin: 8px 0;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.admin-info strong {
+  color: #667eea;
+}
+
+@media (max-width: 480px) {
+  .container form {
+    padding: 30px 20px;
+  }
+
+  .container h1 {
+    font-size: 1.8rem;
+  }
+
+  .recall-forget {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
 }

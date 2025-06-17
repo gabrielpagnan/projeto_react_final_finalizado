@@ -1,15 +1,13 @@
 .navbar {
-  background: linear-gradient(135deg, rgba(30, 60, 114, 0.95), rgba(42, 82, 152, 0.95));
-  backdrop-filter: blur(20px);
-  padding: 20px 30px;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: white;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar::before {
@@ -23,145 +21,82 @@
 }
 
 .navbar h2 {
+  color: white;
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #fff, #87ceeb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.navbar .links {
+.links {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 2rem;
 }
 
-.navbar .links a {
-  color: rgba(255, 255, 255, 0.9);
+.links a {
+  color: white;
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
-  padding: 8px 16px;
-  border-radius: 8px;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
 }
 
-.navbar .links a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(64, 153, 255, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.navbar .links a:hover::before {
-  left: 100%;
-}
-
-.navbar .links a:hover {
-  color: #fff;
-  background: rgba(64, 153, 255, 0.15);
+.links a:hover {
+  background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .usuario-info {
-  color: #87ceeb;
-  font-weight: 600;
-  margin-right: 15px;
-  padding: 8px 16px;
-  background: rgba(64, 153, 255, 0.1);
-  border-radius: 8px;
-  border: 1px solid rgba(64, 153, 255, 0.2);
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  color: white;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
 }
 
-.usuario-info:hover {
-  background: rgba(64, 153, 255, 0.15);
-  transform: translateY(-1px);
+.usuario-tipo {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  font-weight: 400;
 }
 
 .logout-btn {
-  background: linear-gradient(135deg, #f44336, #d32f2f);
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
-}
-
-.logout-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.logout-btn:hover::before {
-  left: 100%;
+  font-weight: 500;
 }
 
 .logout-btn:hover {
-  background: linear-gradient(135deg, #d32f2f, #c62828);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
 }
 
-.logout-btn:active {
-  transform: translateY(0);
-}
-
-/* Responsividade */
 @media (max-width: 768px) {
   .navbar {
-    padding: 15px 20px;
+    padding: 1rem;
     flex-direction: column;
-    gap: 15px;
+    gap: 1rem;
   }
-  
-  .navbar h2 {
-    font-size: 1.5rem;
-  }
-  
-  .navbar .links {
-    gap: 15px;
+
+  .links {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 1rem;
   }
-  
-  .navbar .links a {
-    font-size: 0.85rem;
-    padding: 6px 12px;
-  }
-  
+
   .usuario-info {
-    font-size: 0.8rem;
-    padding: 6px 12px;
-  }
-  
-  .logout-btn {
-    padding: 8px 16px;
-    font-size: 12px;
+    order: -1;
+    width: 100%;
+    text-align: center;
   }
 }

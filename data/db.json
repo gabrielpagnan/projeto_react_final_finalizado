@@ -1,1 +1,219 @@
-{}
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nome": "João Silva",
+      "email": "joao@email.com",
+      "senha": "123456",
+      "tipo": "cliente",
+      "cpf": "123.456.789-00",
+      "telefone": "(48) 99999-9999"
+    },
+    {
+      "id": "2",
+      "nome": "Maria Santos",
+      "email": "maria@email.com",
+      "senha": "123456",
+      "tipo": "admin",
+      "cpf": "987.654.321-00",
+      "telefone": "(48) 88888-8888"
+    },
+    {
+      "id": "3",
+      "nome": "Administrador",
+      "email": "admin@barbearia.com",
+      "senha": "admin123",
+      "tipo": "admin",
+      "cpf": "111.222.333-44",
+      "telefone": "(48) 77777-7777"
+    },
+    {
+      "nome": "Pedro Barato",
+      "email": "p.a.b.c2804@gmail.com",
+      "senha": "123456",
+      "tipo": "admin",
+      "id": "ebf4"
+    },
+    {
+      "id": "a9db",
+      "nome": "gabriel",
+      "email": "gabriel@gmail.com",
+      "cpf": "00000000000",
+      "telefone": "00000000000",
+      "senha": "123456",
+      "tipo": "cliente",
+      "dataCriacao": "2025-06-17T19:24:53.692Z"
+    }
+  ],
+  "profissionais": [
+    {
+      "nome": "Pedro Afonso",
+      "especialidade": "Corte masculino",
+      "telefone": "(48) 98824-3105",
+      "email": "pedro@barbearia.com",
+      "horarios": [
+        {
+          "dia": "segunda",
+          "inicio": "09:00",
+          "fim": "18:00",
+          "ativo": true
+        },
+        {
+          "dia": "terca",
+          "inicio": "09:00",
+          "fim": "18:00",
+          "ativo": true
+        },
+        {
+          "dia": "quarta",
+          "inicio": "09:00",
+          "fim": "18:00",
+          "ativo": true
+        },
+        {
+          "dia": "quinta",
+          "inicio": "09:00",
+          "fim": "18:00",
+          "ativo": true
+        },
+        {
+          "dia": "sexta",
+          "inicio": "09:00",
+          "fim": "18:00",
+          "ativo": true
+        },
+        {
+          "dia": "sabado",
+          "inicio": "08:00",
+          "fim": "17:00",
+          "ativo": true
+        }
+      ],
+      "id": "1"
+    },
+    {
+      "nome": "Gabriel Pagnan",
+      "especialidade": "Barba e bigode",
+      "telefone": "(48) 99676-4308",
+      "email": "gabriel@barbearia.com",
+      "horarios": [
+        {
+          "dia": "segunda",
+          "inicio": "10:00",
+          "fim": "19:00",
+          "ativo": true
+        },
+        {
+          "dia": "terca",
+          "inicio": "10:00",
+          "fim": "19:00",
+          "ativo": true
+        },
+        {
+          "dia": "quarta",
+          "inicio": "10:00",
+          "fim": "19:00",
+          "ativo": true
+        },
+        {
+          "dia": "quinta",
+          "inicio": "10:00",
+          "fim": "19:00",
+          "ativo": true
+        },
+        {
+          "dia": "sexta",
+          "inicio": "10:00",
+          "fim": "19:00",
+          "ativo": true
+        },
+        {
+          "dia": "sabado",
+          "inicio": "09:00",
+          "fim": "16:00",
+          "ativo": true
+        }
+      ],
+      "id": "2"
+    }
+  ],
+  "servicos": [
+    {
+      "id": "1",
+      "nome": "Corte Masculino",
+      "descricao": "Corte tradicional masculino",
+      "preco": 35,
+      "duracao": 30
+    },
+    {
+      "id": "2",
+      "nome": "Barba",
+      "descricao": "Fazer a barba",
+      "preco": 25,
+      "duracao": 20
+    },
+    {
+      "id": "3",
+      "nome": "Corte + Barba",
+      "descricao": "Corte masculino + fazer a barba",
+      "preco": 50,
+      "duracao": 45
+    },
+    {
+      "id": "4",
+      "nome": "Hidratação",
+      "descricao": "Hidratação capilar",
+      "preco": 40,
+      "duracao": 25
+    },
+    {
+      "id": "1e82",
+      "nome": "platinado",
+      "descricao": "descoloração do cabelo",
+      "preco": 250,
+      "duracao": 180
+    }
+  ],
+  "agendamentos": [
+    {
+      "id": "1",
+      "clienteId": "1",
+      "profissionalId": "1",
+      "servicoId": "1",
+      "data": "2024-01-15",
+      "horario": "14:00",
+      "status": "confirmado",
+      "observacoes": "Primeira vez"
+    },
+    {
+      "id": "9711",
+      "clienteId": "1",
+      "profissionalId": "2",
+      "servicoId": "1",
+      "data": "2025-12-12",
+      "horario": "13:35",
+      "observacoes": "",
+      "status": "pendente"
+    },
+    {
+      "id": "b2b2",
+      "clienteId": "1",
+      "profissionalId": "1",
+      "servicoId": "3",
+      "data": "2025-06-14",
+      "horario": "14:45",
+      "observacoes": "",
+      "status": "pendente"
+    },
+    {
+      "id": "6b13",
+      "clienteId": "ebf4",
+      "profissionalId": "2",
+      "servicoId": "3",
+      "data": "2025-06-17",
+      "horario": "19:09",
+      "observacoes": "",
+      "status": "pendente"
+    }
+  ]
+}

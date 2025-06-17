@@ -19,14 +19,26 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <h2>Meu Sistema</h2>
+      <h2>Barbearia Express</h2>
       <div className="links">
         <Link to="/">Home</Link>
-        <Link to="/servicos">Serviços</Link>
-        <Link to="/usuarios">Usuários</Link>
+        <Link to="/agendamentos">Agendamentos</Link>
+        
+        {/* Links apenas para administradores */}
+        {usuarioAtual?.tipo === "admin" && (
+          <>
+            <Link to="/profissionais">Profissionais</Link>
+            <Link to="/servicos">Serviços</Link>
+            <Link to="/usuarios">Usuários</Link>
+          </>
+        )}
+        
         {usuarioAtual && (
           <span className="usuario-info">
             Olá, {usuarioAtual.nome}
+            <span className="usuario-tipo">
+              ({usuarioAtual.tipo === "admin" ? "Administrador" : "Cliente"})
+            </span>
           </span>
         )}
         <button onClick={handleLogout} className="logout-btn">

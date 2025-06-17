@@ -6,7 +6,10 @@ import Layout from "./Components/Layout/Layout";
 import Home from "./Components/Home/Home";
 import Servicos from "./Components/Servicos/Servicos";
 import Usuarios from "./Components/Usuarios/Usuarios";
+import Agendamentos from "./Components/Agendamentos/Agendamentos";
+import Profissionais from "./Components/Profissionais/Profissionais";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
+import AdminRoute from "./Components/AdminRoute/AdminRoute";
 
 function App() {
   return (
@@ -25,23 +28,43 @@ function App() {
           }
         />
         <Route
-          path="/servicos"
+          path="/agendamentos"
           element={
             <ProtectedRoute>
               <Layout>
-                <Servicos />
+                <Agendamentos />
               </Layout>
             </ProtectedRoute>
           }
         />
         <Route
+          path="/profissionais"
+          element={
+            <AdminRoute>
+              <Layout>
+                <Profissionais />
+              </Layout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/servicos"
+          element={
+            <AdminRoute>
+              <Layout>
+                <Servicos />
+              </Layout>
+            </AdminRoute>
+          }
+        />
+        <Route
           path="/usuarios"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <Layout>
                 <Usuarios />
               </Layout>
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />

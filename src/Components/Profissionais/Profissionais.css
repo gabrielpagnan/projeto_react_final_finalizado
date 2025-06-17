@@ -1,10 +1,10 @@
-.servicos-container {
+.profissionais-container {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.servicos-header {
+.profissionais-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -13,14 +13,14 @@
   border-bottom: 2px solid #e0e0e0;
 }
 
-.servicos-header h1 {
+.profissionais-header h1 {
   color: #2c3e50;
   margin: 0;
   font-size: 2.5rem;
   font-weight: 700;
 }
 
-.btn-novo-servico {
+.btn-novo-profissional {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
@@ -33,7 +33,7 @@
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.btn-novo-servico:hover {
+.btn-novo-profissional:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
@@ -56,7 +56,7 @@
   padding: 30px;
   border-radius: 15px;
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -71,12 +71,6 @@
 
 .form-group {
   margin-bottom: 20px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
 }
 
 .form-group label {
@@ -107,9 +101,103 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 80px;
+.horarios-container {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  background: #f8f9fa;
+}
+
+.horario-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  background: white;
+  border: 1px solid #dee2e6;
+}
+
+.horario-item:last-child {
+  margin-bottom: 0;
+}
+
+.horario-header {
+  margin-bottom: 10px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: #2c3e50;
+  position: relative;
+  padding-left: 35px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.checkbox-label:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.checkbox-label input:checked ~ .checkmark {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-label input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-label .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.horario-times {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 25px;
+}
+
+.horario-times input[type="time"] {
+  width: auto;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.horario-times span {
+  color: #666;
+  font-size: 0.9rem;
 }
 
 .form-buttons {
@@ -153,11 +241,11 @@
   transform: translateY(-1px);
 }
 
-.servicos-list {
+.profissionais-list {
   margin-top: 30px;
 }
 
-.no-servicos {
+.no-profissionais {
   text-align: center;
   color: #7f8c8d;
   font-size: 1.2rem;
@@ -167,13 +255,13 @@
   border: 2px dashed #dee2e6;
 }
 
-.servicos-grid {
+.profissionais-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 25px;
 }
 
-.servico-card {
+.profissional-card {
   background: white;
   border-radius: 15px;
   padding: 25px;
@@ -184,7 +272,7 @@
   overflow: hidden;
 }
 
-.servico-card::before {
+.profissional-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -194,12 +282,12 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.servico-card:hover {
+.profissional-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.servico-header {
+.profissional-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -208,14 +296,14 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.servico-header h3 {
+.profissional-header h3 {
   color: #2c3e50;
   margin: 0;
   font-size: 1.4rem;
   font-weight: 700;
 }
 
-.servico-actions {
+.profissional-actions {
   display: flex;
   gap: 10px;
 }
@@ -254,58 +342,73 @@
   transform: translateY(-1px);
 }
 
-.servico-info {
+.profissional-info {
   margin-bottom: 20px;
 }
 
-.servico-descricao {
+.profissional-info p {
+  margin: 8px 0;
   color: #34495e;
   font-size: 0.95rem;
-  line-height: 1.6;
-  margin-bottom: 15px;
+  line-height: 1.5;
 }
 
-.servico-detalhes {
+.profissional-info strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.profissional-horarios h4 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.horarios-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.horario-display {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 12px;
   background: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 6px;
   border-left: 3px solid #667eea;
 }
 
-.preco {
-  color: #27ae60;
-  font-size: 1.1rem;
-  font-weight: 700;
+.dia {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.duracao {
+.horario {
   color: #34495e;
   font-size: 0.9rem;
-  font-weight: 600;
-  background: #e8f4fd;
-  padding: 4px 8px;
-  border-radius: 4px;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
-  .servicos-container {
+  .profissionais-container {
     padding: 15px;
   }
 
-  .servicos-header {
+  .profissionais-header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
   }
 
-  .servicos-header h1 {
+  .profissionais-header h1 {
     font-size: 2rem;
   }
 
-  .servicos-grid {
+  .profissionais-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
@@ -319,25 +422,20 @@
     flex-direction: column;
   }
 
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .servico-header {
+  .profissional-header {
     flex-direction: column;
     gap: 15px;
     align-items: flex-start;
   }
 
-  .servico-actions {
+  .profissional-actions {
     width: 100%;
     justify-content: space-between;
   }
 
-  .servico-detalhes {
+  .horario-display {
     flex-direction: column;
-    gap: 10px;
     align-items: flex-start;
+    gap: 5px;
   }
 } 
