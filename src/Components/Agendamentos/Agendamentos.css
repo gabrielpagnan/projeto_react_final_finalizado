@@ -20,8 +20,13 @@
   color: var(--text-color);
   margin-bottom: var(--spacing-md);
   /* Efeito de gradiente no texto */
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--accent-color)
+  );
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -362,4 +367,4 @@
     margin: 1rem;
     padding: 1rem;
   }
-} 
+}
