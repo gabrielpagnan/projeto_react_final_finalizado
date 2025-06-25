@@ -1,22 +1,17 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FaUser, FaSignOutAlt, FaCalendar, FaCut, FaUsers } from "react-icons/fa";
+import { useAuth } from "../../contexts/auth";
 import "./Navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [usuarioAtual, setUsuarioAtual] = useState(null);
+  const { user, logout } = useAuth();
   const [menuAberto, setMenuAberto] = useState(false);
 
-  useEffect(() => {
-    const usuario = JSON.parse(localStorage.getItem("usuarioAtual") || "null");
-    setUsuarioAtual(usuario);
-  }, []);
-
   const handleLogout = () => {
-    localStorage.removeItem("logado");
-    localStorage.removeItem("usuarioAtual");
+    logout();
     navigate("/login");
   };
 
@@ -53,18 +48,20 @@ function Navbar() {
             </Link>
           </li>
           
-          <li>
-            <Link 
-              to="/agendamentos" 
-              className={`nav-link ${isLinkAtivo("/agendamentos") ? "active" : ""}`}
-              onClick={() => setMenuAberto(false)}
-            >
-              <FaCalendar className="nav-icon" />
-              Agendamentos
-            </Link>
-          </li>
+          {user && (
+            <li>
+              <Link 
+                to="/agendamentos" 
+                className={`nav-link ${isLinkAtivo("/agendamentos") ? "active" : ""}`}
+                onClick={() => setMenuAberto(false)}
+              >
+                <FaCalendar className="nav-icon" />
+                Agendamentos
+              </Link>
+            </li>
+          )}
 
-          {usuarioAtual?.tipo === "admin" && (
+          {user?.tipo === "admin" && (
             <>
               <li>
                 <Link 
@@ -101,14 +98,16 @@ function Navbar() {
         </ul>
 
         <div className="nav-user">
-          {usuarioAtual ? (
+          {user ? (
             <>
               <div className="user-info">
                 <FaUser className="user-icon" />
-                <span className="user-name">{usuarioAtual.nome}</span>
-                <span className="user-type">
-                  {usuarioAtual.tipo === "admin" ? "Administrador" : "Cliente"}
-                </span>
+                <div className="user-details">
+                  <span className="user-name">{user.nome}</span>
+                  <span className="user-type">
+                    {user.tipo === "admin" ? "Administrador" : "Cliente"}
+                  </span>
+                </div>
               </div>
               <button onClick={handleLogout} className="nav-button logout">
                 <FaSignOutAlt />

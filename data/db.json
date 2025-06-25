@@ -214,6 +214,14 @@
       "horario": "19:09",
       "observacoes": "",
       "status": "cancelado"
+    },
+    {
+      "id": "8165",
+      "servicoId": "1",
+      "profissionalId": "1",
+      "data": "2025-06-25",
+      "horario": "17:00",
+      "status": "pendente"
     }
   ]
 }

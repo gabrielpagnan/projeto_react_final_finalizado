@@ -5,6 +5,7 @@ import Register from "./Components/Register/Register";
 import Servicos from "./Components/Servicos/Servicos";
 import Profissionais from "./Components/Profissionais/Profissionais";
 import Agendamentos from "./Components/Agendamentos/Agendamentos";
+import NovoAgendamento from "./Components/Agendamentos/NovoAgendamento";
 import Usuarios from "./Components/Usuarios/Usuarios";
 import Layout from "./Components/Layout/Layout";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
@@ -27,6 +28,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Agendamentos />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/agendamentos/novo" 
+          element={
+            <ProtectedRoute>
+              <NovoAgendamento />
             </ProtectedRoute>
           } 
         />
