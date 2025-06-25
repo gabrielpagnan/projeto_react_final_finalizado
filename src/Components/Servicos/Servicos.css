@@ -441,4 +441,12 @@
   .servico-image {
     height: 150px;
   }
+}
+
+.servico-detalhes {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 } 
