@@ -2,7 +2,12 @@ import { useState } from "react";
 import { FaUser, FaLock, FaEnvelope, FaPhone, FaIdCard } from "react-icons/fa";
 import "./Register.css";
 import { useNavigate, Link } from "react-router-dom";
+import api from '../../services/api';
 
+/**
+ * Componente Register - Página de cadastro de usuários
+ * Permite que novos usuários criem uma conta no sistema
+ */
 const Register = () => {
   const [formData, setFormData] = useState({
     nome: "",
@@ -10,7 +15,8 @@ const Register = () => {
     cpf: "",
     telefone: "",
     senha: "",
-    confirmarSenha: ""
+    confirmarSenha: "",
+    termos: false
   });
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
@@ -18,11 +24,12 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
+    setErro(null);
   };
 
   const handleSubmit = async (event) => {
@@ -31,22 +38,7 @@ const Register = () => {
     setSucesso("");
     setLoading(true);
 
-    // Validações básicas
-    if (formData.senha !== formData.confirmarSenha) {
-      setErro("As senhas não coincidem");
-      setLoading(false);
-      return;
-    }
-
-    if (formData.senha.length < 6) {
-      setErro("A senha deve ter pelo menos 6 caracteres");
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.email.includes("@")) {
-      setErro("Email inválido");
-      setLoading(false);
+    if (!validateForm()) {
       return;
     }
 
@@ -70,34 +62,70 @@ const Register = () => {
         telefone: formData.telefone,
         senha: formData.senha,
         tipo: "cliente", // Sempre será cliente
-        dataCriacao: new Date().toISOString()
+        dataCriacao: new Date().toISOString(),
+        role: 'cliente',
+        ativo: true
       };
 
       // Salvar no banco de dados
-      const saveResponse = await fetch("http://localhost:3000/usuarios", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(novoUsuario),
-      });
+      await api.post('/usuarios', novoUsuario);
 
-      if (saveResponse.ok) {
-        setSucesso("Conta criada com sucesso! Redirecionando para o login...");
-        
-        // Redirecionar para login após 2 segundos
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
-      } else {
-        setErro("Erro ao criar conta. Tente novamente.");
-      }
+      setSucesso("Conta criada com sucesso! Redirecionando para o login...");
+      
+      // Redirecionar para login após 2 segundos
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       console.error("Erro ao registrar:", error);
       setErro("Erro de conexão. Verifique se o servidor está rodando.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const validateForm = () => {
+    if (!formData.nome || !formData.email || !formData.senha || !formData.confirmarSenha) {
+      setErro("Todos os campos são obrigatórios.");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErro("Por favor, insira um email válido.");
+      return false;
+    }
+
+    if (formData.senha.length < 6) {
+      setErro("A senha deve ter pelo menos 6 caracteres.");
+      return false;
+    }
+
+    if (formData.senha !== formData.confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return false;
+    }
+
+    const telefoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+    if (formData.telefone && !telefoneRegex.test(formData.telefone)) {
+      setErro("Por favor, insira um telefone válido no formato (99) 99999-9999.");
+      return false;
+    }
+
+    if (!formData.termos) {
+      setErro("Você precisa aceitar os termos de uso.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const formatTelefone = (value) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 11) {
+      return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
+    return value;
   };
 
   return (
@@ -149,7 +177,15 @@ const Register = () => {
             placeholder="Telefone"
             required
             value={formData.telefone}
-            onChange={handleChange}
+            onChange={(e) => {
+              const formatted = formatTelefone(e.target.value);
+              handleChange({
+                target: {
+                  name: 'telefone',
+                  value: formatted
+                }
+              });
+            }}
           />
           <FaPhone className="icon" />
         </div>
@@ -176,6 +212,21 @@ const Register = () => {
             onChange={handleChange}
           />
           <FaLock className="icon" />
+        </div>
+
+        <div className="form-group checkbox">
+          <label>
+            <input
+              type="checkbox"
+              name="termos"
+              checked={formData.termos}
+              onChange={handleChange}
+            />
+            Li e aceito os{' '}
+            <a href="#" target="_blank" rel="noopener noreferrer">
+              termos de uso
+            </a>
+          </label>
         </div>
 
         {erro && <p className="error-message">{erro}</p>}

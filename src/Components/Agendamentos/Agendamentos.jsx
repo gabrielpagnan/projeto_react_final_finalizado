@@ -1,400 +1,226 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/auth';
+import api from '../../services/api';
 import "./Agendamentos.css";
 
-function Agendamentos() {
-  const [agendamentos, setAgendamentos] = useState([]);
-  const [profissionais, setProfissionais] = useState([]);
-  const [servicos, setServicos] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [usuarioAtual, setUsuarioAtual] = useState(null);
-  const [formData, setFormData] = useState({
-    clienteId: "",
-    profissionalId: "",
-    servicoId: "",
-    data: "",
-    horario: "",
-    observacoes: ""
-  });
+/**
+ * Componente Agendamentos - Página de gerenciamento de agendamentos
+ * Permite visualizar, criar, editar e cancelar agendamentos
+ */
+const Agendamentos = () => {
+  // Hook de navegação e contexto de autenticação
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
+  // Estados do componente
+  const [agendamentos, setAgendamentos] = useState([]); // Lista de agendamentos
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [error, setError] = useState(null); // Estado de erro
+  const [filtro, setFiltro] = useState('todos'); // Filtro de status
+
+  /**
+   * Efeito para carregar os agendamentos ao montar o componente
+   * Faz a requisição à API e atualiza o estado
+   */
   useEffect(() => {
-    const usuario = JSON.parse(localStorage.getItem("usuarioAtual") || "null");
-    setUsuarioAtual(usuario);
-    
-    // Se for cliente, definir automaticamente o clienteId
-    if (usuario && usuario.tipo === "cliente") {
-      setFormData(prev => ({
-        ...prev,
-        clienteId: usuario.id
-      }));
-    }
-  }, []);
-
-  // Efeito separado para buscar dados após o usuário ser definido
-  useEffect(() => {
-    if (usuarioAtual) {
-      fetchData();
-    }
-  }, [usuarioAtual]);
-
-  const fetchData = async () => {
-    try {
-      const [agendamentosRes, profissionaisRes, servicosRes, usuariosRes] = await Promise.all([
-        fetch("http://localhost:3000/agendamentos"),
-        fetch("http://localhost:3000/profissionais"),
-        fetch("http://localhost:3000/servicos"),
-        fetch("http://localhost:3000/usuarios")
-      ]);
-
-      const [agendamentosData, profissionaisData, servicosData, usuariosData] = await Promise.all([
-        agendamentosRes.json(),
-        profissionaisRes.json(),
-        servicosRes.json(),
-        usuariosRes.json()
-      ]);
-
-      // Filtrar agendamentos baseado no tipo de usuário
-      let agendamentosFiltrados = agendamentosData;
-      if (usuarioAtual && usuarioAtual.tipo === "cliente") {
-        agendamentosFiltrados = agendamentosData.filter(
-          agendamento => String(agendamento.clienteId) === String(usuarioAtual.id)
-        );
+    const fetchAgendamentos = async () => {
+      try {
+        setLoading(true);
+        // Se for admin, busca todos os agendamentos, senão busca apenas do usuário
+        const endpoint = user?.role === 'admin' 
+          ? '/agendamentos'
+          : `/agendamentos?userId=${user.id}`;
+        
+        const response = await api.get(endpoint);
+        setAgendamentos(response.data);
+        setError(null);
+      } catch (err) {
+        setError('Erro ao carregar os agendamentos. Tente novamente mais tarde.');
+        console.error('Erro ao buscar agendamentos:', err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setAgendamentos(agendamentosFiltrados);
-      setProfissionais(profissionaisData);
-      setServicos(servicosData);
-      setUsuarios(usuariosData);
-    } catch (error) {
-      console.error("Erro ao carregar dados:", error);
-    }
-  };
+    fetchAgendamentos();
+  }, [user]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3000/agendamentos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          status: "pendente"
-        }),
-      });
-
-      if (response.ok) {
-        setShowForm(false);
-        setFormData({
-          clienteId: usuarioAtual?.tipo === "cliente" ? usuarioAtual.id : "",
-          profissionalId: "",
-          servicoId: "",
-          data: "",
-          horario: "",
-          observacoes: ""
-        });
-        fetchData();
-      }
-    } catch (error) {
-      console.error("Erro ao criar agendamento:", error);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
+  /**
+   * Função para formatar data e hora
+   * @param {string} dataHora - String de data e hora no formato ISO
+   * @returns {string} Data e hora formatadas
+   */
+  const formatarDataHora = (dataHora) => {
+    return new Date(dataHora).toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
-  const getClienteNome = (clienteId) => {
-    const cliente = usuarios.find(u => u.id === clienteId);
-    return cliente ? cliente.nome : "N/A";
-  };
-
-  const getProfissionalNome = (profissionalId) => {
-    const profissional = profissionais.find(p => p.id === profissionalId);
-    return profissional ? profissional.nome : "N/A";
-  };
-
-  const getServicoNome = (servicoId) => {
-    const servico = servicos.find(s => s.id === servicoId);
-    return servico ? servico.nome : "N/A";
-  };
-
-  const getServicoPreco = (servicoId) => {
-    const servico = servicos.find(s => s.id === servicoId);
-    return servico ? `R$ ${servico.preco.toFixed(2)}` : "N/A";
-  };
-
-  const formatarData = (data) => {
-    return new Date(data).toLocaleDateString('pt-BR');
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "confirmado": return "green";
-      case "pendente": return "orange";
-      case "cancelado": return "red";
-      default: return "gray";
-    }
-  };
-
-  const handleStatusChange = async (agendamentoId, novoStatus) => {
-    try {
-      const response = await fetch(`http://localhost:3000/agendamentos/${agendamentoId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: novoStatus }),
-      });
-
-      if (response.ok) {
-        fetchData();
+  /**
+   * Função para cancelar um agendamento
+   * @param {number} id - ID do agendamento a ser cancelado
+   */
+  const handleCancelar = async (id) => {
+    if (window.confirm('Tem certeza que deseja cancelar este agendamento?')) {
+      try {
+        await api.patch(`/agendamentos/${id}`, { status: 'cancelado' });
+        setAgendamentos(prev => 
+          prev.map(ag => 
+            ag.id === id ? { ...ag, status: 'cancelado' } : ag
+          )
+        );
+      } catch (err) {
+        console.error('Erro ao cancelar agendamento:', err);
+        alert('Erro ao cancelar agendamento. Tente novamente.');
       }
-    } catch (error) {
-      console.error("Erro ao atualizar status:", error);
     }
   };
 
-  const handleConfirmarAgendamento = async (agendamentoId) => {
+  /**
+   * Função para concluir um agendamento
+   * @param {number} id - ID do agendamento a ser concluído
+   */
+  const handleConcluir = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/agendamentos/${agendamentoId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: "confirmado" }),
-      });
-
-      if (response.ok) {
-        fetchData();
-      }
-    } catch (error) {
-      console.error("Erro ao confirmar agendamento:", error);
+      await api.patch(`/agendamentos/${id}`, { status: 'concluido' });
+      setAgendamentos(prev => 
+        prev.map(ag => 
+          ag.id === id ? { ...ag, status: 'concluido' } : ag
+        )
+      );
+    } catch (err) {
+      console.error('Erro ao concluir agendamento:', err);
+      alert('Erro ao concluir agendamento. Tente novamente.');
     }
   };
 
-  const handleExcluirAgendamento = async (agendamentoId) => {
-    if (!window.confirm("Tem certeza que deseja excluir este agendamento?")) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`http://localhost:3000/agendamentos/${agendamentoId}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        fetchData();
-      }
-    } catch (error) {
-      console.error("Erro ao excluir agendamento:", error);
-    }
+  /**
+   * Função para filtrar agendamentos por status
+   * @param {Array} agendamentos - Lista de agendamentos
+   * @returns {Array} Agendamentos filtrados
+   */
+  const filtrarAgendamentos = (agendamentos) => {
+    if (filtro === 'todos') return agendamentos;
+    return agendamentos.filter(ag => ag.status === filtro);
   };
 
-  // Mostrar loading enquanto carrega
-  if (!usuarioAtual) {
+  // Renderização condicional baseada no estado de loading e erro
+  if (loading) {
     return (
-      <div className="agendamentos-container">
-        <div className="loading">
-          <p>Carregando...</p>
-        </div>
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-text">Carregando agendamentos...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2 className="error-title">Ops! Algo deu errado</h2>
+        <p className="error-message">{error}</p>
+        <button 
+          className="retry-button"
+          onClick={() => window.location.reload()}
+        >
+          Tentar novamente
+        </button>
       </div>
     );
   }
 
   return (
     <div className="agendamentos-container">
+      {/* Cabeçalho da página */}
       <div className="agendamentos-header">
-        <h1>
-          {usuarioAtual?.tipo === "cliente" ? "Meus Agendamentos" : "Agendamentos"}
-        </h1>
-        <button 
-          className="btn-novo-agendamento"
-          onClick={() => setShowForm(true)}
-        >
-          Novo Agendamento
-        </button>
+        <h1 className="agendamentos-title">Meus Agendamentos</h1>
+        
+        {/* Botões de ação */}
+        <div className="header-actions">
+          <button
+            className="btn-novo-agendamento"
+            onClick={() => navigate('/agendamentos/novo')}
+          >
+            Novo Agendamento
+          </button>
+
+          {/* Filtro de status */}
+          <select
+            className="filtro-status"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+          >
+            <option value="todos">Todos</option>
+            <option value="pendente">Pendentes</option>
+            <option value="concluido">Concluídos</option>
+            <option value="cancelado">Cancelados</option>
+          </select>
+        </div>
       </div>
 
-      {showForm && (
-        <div className="form-overlay">
-          <div className="form-container">
-            <h2>Novo Agendamento</h2>
-            <form onSubmit={handleSubmit}>
-              {/* Campo cliente apenas para admins */}
-              {usuarioAtual?.tipo === "admin" && (
-                <div className="form-group">
-                  <label>Cliente:</label>
-                  <select 
-                    name="clienteId" 
-                    value={formData.clienteId}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Selecione um cliente</option>
-                    {usuarios.filter(u => u.tipo === "cliente").map(cliente => (
-                      <option key={cliente.id} value={cliente.id}>
-                        {cliente.nome}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              <div className="form-group">
-                <label>Profissional:</label>
-                <select 
-                  name="profissionalId" 
-                  value={formData.profissionalId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Selecione um profissional</option>
-                  {profissionais.map(profissional => (
-                    <option key={profissional.id} value={profissional.id}>
-                      {profissional.nome} - {profissional.especialidade}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Serviço:</label>
-                <select 
-                  name="servicoId" 
-                  value={formData.servicoId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Selecione um serviço</option>
-                  {servicos.map(servico => (
-                    <option key={servico.id} value={servico.id}>
-                      {servico.nome} - R$ {servico.preco.toFixed(2)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Data:</label>
-                <input
-                  type="date"
-                  name="data"
-                  value={formData.data}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Horário:</label>
-                <input
-                  type="time"
-                  name="horario"
-                  value={formData.horario}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Observações:</label>
-                <textarea
-                  name="observacoes"
-                  value={formData.observacoes}
-                  onChange={handleInputChange}
-                  rows="3"
-                />
-              </div>
-
-              <div className="form-buttons">
-                <button type="submit">Criar Agendamento</button>
-                <button 
-                  type="button" 
-                  onClick={() => setShowForm(false)}
-                  className="btn-cancelar"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      <div className="agendamentos-grid">
-        {agendamentos.length === 0 ? (
-          <div className="no-agendamentos">
-            <p>Nenhum agendamento encontrado.</p>
-          </div>
-        ) : (
-          agendamentos.map((agendamento) => (
-            <div key={agendamento.id} className="agendamento-card">
-              <div className="agendamento-header">
-                <h3>Agendamento #{agendamento.id}</h3>
-                <span 
-                  className={`status status-${getStatusColor(agendamento.status)}`}
-                >
-                  {agendamento.status}
-                </span>
-              </div>
-              
-              <div className="agendamento-info">
-                <p><strong>Cliente:</strong> {getClienteNome(agendamento.clienteId)}</p>
-                <p><strong>Profissional:</strong> {getProfissionalNome(agendamento.profissionalId)}</p>
-                <p><strong>Serviço:</strong> {getServicoNome(agendamento.servicoId)}</p>
-                <p><strong>Preço:</strong> {getServicoPreco(agendamento.servicoId)}</p>
-                <p><strong>Data:</strong> {formatarData(agendamento.data)}</p>
-                <p><strong>Horário:</strong> {agendamento.horario}</p>
-                {agendamento.observacoes && (
-                  <p><strong>Observações:</strong> {agendamento.observacoes}</p>
-                )}
-              </div>
-
-              {/* Controles apenas para admins */}
-              {usuarioAtual?.tipo === "admin" && (
-                <div className="agendamento-actions">
-                  <select
-                    value={agendamento.status}
-                    onChange={(e) => handleStatusChange(agendamento.id, e.target.value)}
-                    className="status-select"
-                  >
-                    <option value="pendente">Pendente</option>
-                    <option value="confirmado">Confirmado</option>
-                    <option value="cancelado">Cancelado</option>
-                  </select>
-                  
-                  <div className="action-buttons">
-                    {agendamento.status !== "confirmado" && (
+      {/* Tabela de agendamentos */}
+      <div className="agendamentos-table-container">
+        <table className="agendamentos-table">
+          <thead>
+            <tr>
+              <th>Data/Hora</th>
+              <th>Serviço</th>
+              <th>Profissional</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtrarAgendamentos(agendamentos).map((agendamento) => (
+              <tr key={agendamento.id}>
+                <td>{formatarDataHora(agendamento.dataHora)}</td>
+                <td>{agendamento.servico.nome}</td>
+                <td>{agendamento.profissional.nome}</td>
+                <td>
+                  <span className={`status-badge ${agendamento.status}`}>
+                    {agendamento.status}
+                  </span>
+                </td>
+                <td>
+                  {/* Ações disponíveis baseadas no status e papel do usuário */}
+                  {agendamento.status === 'pendente' && (
+                    <>
+                      {user?.role === 'admin' && (
+                        <button
+                          className="btn-concluir"
+                          onClick={() => handleConcluir(agendamento.id)}
+                        >
+                          Concluir
+                        </button>
+                      )}
                       <button
-                        onClick={() => handleConfirmarAgendamento(agendamento.id)}
-                        className="btn-confirmar"
-                        title="Confirmar Agendamento"
+                        className="btn-cancelar"
+                        onClick={() => handleCancelar(agendamento.id)}
                       >
-                        ✓ Confirmar
+                        Cancelar
                       </button>
-                    )}
-                    
-                    <button
-                      onClick={() => handleExcluirAgendamento(agendamento.id)}
-                      className="btn-excluir"
-                      title="Excluir Agendamento"
-                    >
-                      🗑️ Excluir
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Mensagem quando não há agendamentos */}
+        {filtrarAgendamentos(agendamentos).length === 0 && (
+          <p className="no-agendamentos">
+            Nenhum agendamento {filtro !== 'todos' ? `${filtro} ` : ''}encontrado.
+          </p>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default Agendamentos; 

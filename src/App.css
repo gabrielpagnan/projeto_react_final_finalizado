@@ -1,23 +1,76 @@
+/* Reset global para garantir consistência entre navegadores */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-shadow: #000 1px 1px;
-  color: #fff;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Variáveis CSS globais - Sistema de Design */
+:root {
+  /* Cores principais do tema */
+  --primary-color: #2a5298;    /* Azul principal */
+  --secondary-color: #1e3c72;  /* Azul escuro */
+  --accent-color: #4099ff;     /* Azul de destaque */
+  
+  /* Cores de texto */
+  --text-color: #333;          /* Texto principal */
+  --text-light: #666;          /* Texto secundário */
+  
+  /* Cores de fundo */
+  --background-light: #f5f7fa; /* Fundo claro */
+  --white: #ffffff;            /* Branco */
+  
+  /* Sistema de sombras */
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Sistema de transições e bordas */
+  --transition: all 0.3s ease;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  
+  /* Sistema de espaçamento */
+  --spacing-xs: 0.25rem;  /* 4px */
+  --spacing-sm: 0.5rem;   /* 8px */
+  --spacing-md: 1rem;     /* 16px */
+  --spacing-lg: 1.5rem;   /* 24px */
+  --spacing-xl: 2rem;     /* 32px */
+  
+  /* Sistema de tipografia */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  
+  /* Layout e efeitos */
+  --max-width-container: 1200px;
+  --backdrop-blur: blur(10px);
+  --glass-background: rgba(255, 255, 255, 0.1);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos base do corpo da página */
+body {
+  background-color: var(--background-light);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Container principal do aplicativo */
 .App {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
   background-size: cover;
   background-position: center;
   position: relative;
 }
 
+/* Efeito de sobreposição com gradientes */
 .App::before {
   content: '';
   position: absolute;
@@ -28,12 +81,110 @@
   background: 
     radial-gradient(circle at 20% 80%, rgba(30, 60, 114, 0.4) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(42, 82, 152, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(64, 153, 255, 0.3) 0%, transparent 50%);
+    radial-gradient(circle at 40% 40%, rgba(64, 153, 255, 0.2) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
 
+/* Garantir que o conteúdo fique acima do efeito de sobreposição */
 .App > * {
   position: relative;
   z-index: 1;
+}
+
+/* Estilização padrão de botões */
+button, .btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--primary-color);
+  color: var(--white);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+/* Efeito hover nos botões */
+button:hover, .btn:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Classes utilitárias para efeitos modernos */
+
+/* Efeito vidro fosco (glassmorphism) */
+.glass-effect {
+  backdrop-filter: var(--backdrop-blur);
+  background: var(--glass-background);
+  border: var(--glass-border);
+}
+
+/* Container responsivo */
+.container {
+  width: 100%;
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* Texto com gradiente */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Efeito de elevação ao hover */
+.shadow-hover {
+  transition: var(--transition);
+}
+
+.shadow-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Estado de carregamento (loading) */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }

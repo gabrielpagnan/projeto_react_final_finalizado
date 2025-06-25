@@ -1,59 +1,57 @@
-import { useState } from "react";
+import { useState, useContext } from 'react';
 import { FaUser, FaLock } from "react-icons/fa";
 import "./Login.css";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from '../../contexts/auth';
 
+/**
+ * Componente Login - Página de autenticação
+ * Permite que usuários façam login no sistema
+ */
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [erro, setErro] = useState("");
-  const [loading, setLoading] = useState(false);
+  // Hook de navegação e contexto de autenticação
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setErro("");
+  // Estados do componente
+  const [formData, setFormData] = useState({ // Dados do formulário
+    email: '',
+    senha: ''
+  });
+  const [error, setError] = useState(null); // Estado de erro
+  const [loading, setLoading] = useState(false); // Estado de carregamento
+
+  /**
+   * Função para lidar com mudanças nos campos do formulário
+   * @param {Event} e - Evento de mudança do input
+   */
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Limpa mensagem de erro quando usuário começa a digitar
+    setError(null);
+  };
+
+  /**
+   * Função para enviar o formulário de login
+   * @param {Event} e - Evento de submit do formulário
+   */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
-      // Buscar usuários no banco de dados
-      const response = await fetch("http://localhost:3000/usuarios");
-      const usuarios = await response.json();
-      
-      // Verificar se é o admin padrão
-      if (username === "admin@barbearia.com" && password === "admin123") {
-        const admin = usuarios.find(u => u.email === "admin@barbearia.com");
-        if (admin) {
-          localStorage.setItem("logado", "true");
-          localStorage.setItem("usuarioAtual", JSON.stringify({
-            id: admin.id,
-            nome: admin.nome,
-            email: admin.email,
-            tipo: admin.tipo
-          }));
-          navigate("/");
-          return;
-        }
-      }
-
-      // Verificar usuários registrados
-      const usuario = usuarios.find(u => u.email === username && u.senha === password);
-
-      if (usuario) {
-        localStorage.setItem("logado", "true");
-        localStorage.setItem("usuarioAtual", JSON.stringify({
-          id: usuario.id,
-          nome: usuario.nome,
-          email: usuario.email,
-          tipo: usuario.tipo
-        }));
-        navigate("/");
-      } else {
-        setErro("E-mail ou senha inválidos");
-      }
-    } catch (error) {
-      console.error("Erro ao fazer login:", error);
-      setErro("Erro de conexão. Verifique se o servidor está rodando.");
+      await login(formData.email, formData.senha);
+      navigate('/'); // Redireciona para a página inicial após login
+    } catch (err) {
+      setError(
+        err.response?.data?.message || 
+        'Erro ao fazer login. Por favor, tente novamente.'
+      );
     } finally {
       setLoading(false);
     }
@@ -70,8 +68,9 @@ const Login = () => {
             type="text"
             placeholder="E-mail"
             required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={formData.email}
+            onChange={handleInputChange}
+            name="email"
           />
           <FaUser className="icon" />
         </div>
@@ -80,8 +79,9 @@ const Login = () => {
             type="password"
             placeholder="Senha"
             required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.senha}
+            onChange={handleInputChange}
+            name="senha"
           />
           <FaLock className="icon" />
         </div>
@@ -91,7 +91,7 @@ const Login = () => {
           </label>
           <a href="#">Esqueceu sua senha?</a>
         </div>
-        {erro && <p style={{ color: "red" }}>{erro}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit" disabled={loading}>
           {loading ? "Entrando..." : "Login"}
         </button>

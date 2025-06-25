@@ -1,441 +1,219 @@
+/* Container principal da página de profissionais */
 .profissionais-container {
-  padding: 20px;
-  max-width: 1200px;
+  padding: var(--spacing-xl);
+  max-width: var(--max-width-container);
   margin: 0 auto;
+  min-height: 100vh;
 }
 
+/* Cabeçalho da seção */
 .profissionais-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.profissionais-header h1 {
-  color: #2c3e50;
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: 700;
-}
-
-.btn-novo-profissional {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.btn-novo-profissional:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-.form-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.form-container {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.form-container h2 {
-  color: #2c3e50;
-  margin-bottom: 25px;
   text-align: center;
-  font-size: 1.8rem;
+  margin-bottom: var(--spacing-xl);
+  /* Animação de entrada */
+  animation: fadeIn 0.5s ease-out;
 }
 
-.form-group {
-  margin-bottom: 20px;
+/* Título principal */
+.profissionais-title {
+  font-size: var(--font-size-2xl);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-md);
+  /* Efeito de gradiente no texto */
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #34495e;
-  font-weight: 600;
-  font-size: 0.95rem;
+/* Descrição da seção */
+.profissionais-description {
+  color: var(--text-light);
+  font-size: var(--font-size-lg);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.horarios-container {
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 15px;
-  background: #f8f9fa;
-}
-
-.horario-item {
-  margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 6px;
-  background: white;
-  border: 1px solid #dee2e6;
-}
-
-.horario-item:last-child {
-  margin-bottom: 0;
-}
-
-.horario-header {
-  margin-bottom: 10px;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-weight: 600;
-  color: #2c3e50;
-  position: relative;
-  padding-left: 35px;
-}
-
-.checkbox-label input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-.checkmark {
-  position: absolute;
-  left: 0;
-  height: 20px;
-  width: 20px;
-  background-color: #eee;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.checkbox-label:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-.checkbox-label input:checked ~ .checkmark {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-.checkbox-label input:checked ~ .checkmark:after {
-  display: block;
-}
-
-.checkbox-label .checkmark:after {
-  left: 7px;
-  top: 3px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-.horario-times {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: 25px;
-}
-
-.horario-times input[type="time"] {
-  width: auto;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.horario-times span {
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 15px;
-  justify-content: flex-end;
-  margin-top: 25px;
-}
-
-.btn-salvar {
-  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-salvar:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-}
-
-.btn-cancelar {
-  background: #95a5a6;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-cancelar:hover {
-  background: #7f8c8d;
-  transform: translateY(-1px);
-}
-
-.profissionais-list {
-  margin-top: 30px;
-}
-
-.no-profissionais {
-  text-align: center;
-  color: #7f8c8d;
-  font-size: 1.2rem;
-  padding: 40px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  border: 2px dashed #dee2e6;
-}
-
+/* Grid de cards dos profissionais */
 .profissionais-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
 }
 
+/* Card individual do profissional */
 .profissional-card {
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-  transition: all 0.3s ease;
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
   position: relative;
   overflow: hidden;
+  /* Efeito de vidro fosco */
+  backdrop-filter: var(--backdrop-blur);
+  border: var(--glass-border);
+  /* Animação de entrada */
+  animation: fadeIn 0.5s ease-out;
 }
 
-.profissional-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
+/* Efeito hover no card */
 .profissional-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
-.profissional-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #f0f0f0;
+/* Container da imagem do profissional */
+.profissional-image-container {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto var(--spacing-md);
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primary-color);
+  box-shadow: var(--shadow);
 }
 
-.profissional-header h3 {
-  color: #2c3e50;
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
+/* Imagem do profissional */
+.profissional-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
 }
 
-.profissional-actions {
-  display: flex;
-  gap: 10px;
+/* Efeito hover na imagem */
+.profissional-image-container:hover .profissional-image {
+  transform: scale(1.1);
 }
 
-.btn-editar {
-  background: #3498db;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+/* Badge de status online/offline */
+.status-badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
 }
 
-.btn-editar:hover {
-  background: #2980b9;
-  transform: translateY(-1px);
+.status-online {
+  background-color: #4CAF50; /* Verde para online */
 }
 
-.btn-excluir {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.status-offline {
+  background-color: #f44336; /* Vermelho para offline */
 }
 
-.btn-excluir:hover {
-  background: #c0392b;
-  transform: translateY(-1px);
-}
-
+/* Informações do profissional */
 .profissional-info {
-  margin-bottom: 20px;
+  text-align: center;
 }
 
-.profissional-info p {
-  margin: 8px 0;
-  color: #34495e;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.profissional-info strong {
-  color: #2c3e50;
+/* Nome do profissional */
+.profissional-nome {
+  font-size: var(--font-size-xl);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xs);
   font-weight: 600;
 }
 
-.profissional-horarios h4 {
-  color: #2c3e50;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
+/* Especialidade do profissional */
+.profissional-especialidade {
+  color: var(--accent-color);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Descrição do profissional */
+.profissional-descricao {
+  color: var(--text-light);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+}
+
+/* Container de avaliações */
+.avaliacoes-container {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Estrelas de avaliação */
+.estrelas {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.estrela {
+  color: #ffd700; /* Amarelo para estrelas */
+  font-size: var(--font-size-lg);
+}
+
+/* Botão de agendamento */
+.agendar-button {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius);
   font-weight: 600;
-}
-
-.horarios-list {
+  cursor: pointer;
+  transition: var(--transition);
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.horario-display {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  background: #f8f9fa;
-  border-radius: 6px;
-  border-left: 3px solid #667eea;
+  justify-content: center;
+  gap: var(--spacing-sm);
 }
 
-.dia {
-  color: #2c3e50;
-  font-weight: 600;
-  font-size: 0.9rem;
+/* Efeito hover no botão */
+.agendar-button:hover {
+  background: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
-.horario {
-  color: #34495e;
-  font-size: 0.9rem;
-  font-weight: 500;
+/* Ícone do botão */
+.agendar-button svg {
+  width: 20px;
+  height: 20px;
+  transition: var(--transition);
 }
 
+.agendar-button:hover svg {
+  transform: translateX(4px);
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
   .profissionais-container {
-    padding: 15px;
-  }
-
-  .profissionais-header {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
-  }
-
-  .profissionais-header h1 {
-    font-size: 2rem;
+    padding: var(--spacing-lg);
   }
 
   .profissionais-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .profissionais-container {
+    padding: var(--spacing-md);
   }
 
-  .form-container {
-    width: 95%;
-    padding: 20px;
+  .profissional-nome {
+    font-size: var(--font-size-lg);
   }
 
-  .form-buttons {
-    flex-direction: column;
-  }
-
-  .profissional-header {
-    flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-  }
-
-  .profissional-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .horario-display {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
+  .profissional-image-container {
+    width: 120px;
+    height: 120px;
   }
 } 

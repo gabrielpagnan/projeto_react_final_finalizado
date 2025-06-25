@@ -1,24 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/auth';
+import api from '../../services/api';
 import "./Profissionais.css";
 
-function Profissionais() {
-  const [profissionais, setProfissionais] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
-    nome: "",
-    especialidade: "",
-    telefone: "",
-    email: "",
-    horarios: [
-      { dia: "segunda", inicio: "09:00", fim: "18:00", ativo: true },
-      { dia: "terca", inicio: "09:00", fim: "18:00", ativo: true },
-      { dia: "quarta", inicio: "09:00", fim: "18:00", ativo: true },
-      { dia: "quinta", inicio: "09:00", fim: "18:00", ativo: true },
-      { dia: "sexta", inicio: "09:00", fim: "18:00", ativo: true },
-      { dia: "sabado", inicio: "08:00", fim: "17:00", ativo: true },
-      { dia: "domingo", inicio: "00:00", fim: "00:00", ativo: false }
-    ]
+/**
+ * Componente Profissionais - Página de profissionais da barbearia
+ * Exibe a lista de profissionais e permite gerenciamento (para admins)
+ */
+const Profissionais = () => {
+  // Hook de navegação e contexto de autenticação
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
+  // Estados do componente
+  const [profissionais, setProfissionais] = useState([]); // Lista de profissionais
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [error, setError] = useState(null); // Estado de erro
+  const [showForm, setShowForm] = useState(false); // Controle do formulário
+  const [formData, setFormData] = useState({ // Dados do formulário
+    nome: '',
+    especialidade: '',
+    experiencia: '',
+    foto: '',
+    disponivel: true
   });
 
   const diasSemana = [
@@ -31,303 +36,256 @@ function Profissionais() {
     { key: "domingo", label: "Domingo" }
   ];
 
+  /**
+   * Efeito para carregar os profissionais ao montar o componente
+   * Faz a requisição à API e atualiza o estado
+   */
   useEffect(() => {
+    const fetchProfissionais = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/profissionais');
+        setProfissionais(response.data);
+        setError(null);
+      } catch (err) {
+        setError('Erro ao carregar os profissionais. Tente novamente mais tarde.');
+        console.error('Erro ao buscar profissionais:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProfissionais();
   }, []);
 
-  const fetchProfissionais = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/profissionais");
-      const data = await response.json();
-      setProfissionais(data);
-    } catch (error) {
-      console.error("Erro ao carregar profissionais:", error);
-    }
+  /**
+   * Função para lidar com mudanças nos campos do formulário
+   * @param {Event} e - Evento de mudança do input
+   */
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
+  /**
+   * Função para enviar o formulário de novo profissional
+   * @param {Event} e - Evento de submit do formulário
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = editingId 
-        ? `http://localhost:3000/profissionais/${editingId}`
-        : "http://localhost:3000/profissionais";
-      
-      const method = editingId ? "PUT" : "POST";
-      
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      await api.post('/profissionais', formData);
+      const response = await api.get('/profissionais');
+      setProfissionais(response.data);
+      setShowForm(false);
+      setFormData({
+        nome: '',
+        especialidade: '',
+        experiencia: '',
+        foto: '',
+        disponivel: true
       });
-
-      if (response.ok) {
-        setShowForm(false);
-        setEditingId(null);
-        resetForm();
-        fetchProfissionais();
-      }
-    } catch (error) {
-      console.error("Erro ao salvar profissional:", error);
+    } catch (err) {
+      console.error('Erro ao adicionar profissional:', err);
+      alert('Erro ao adicionar profissional. Tente novamente.');
     }
   };
 
-  const handleEdit = (profissional) => {
-    setFormData({
-      nome: profissional.nome,
-      especialidade: profissional.especialidade,
-      telefone: profissional.telefone,
-      email: profissional.email,
-      horarios: profissional.horarios.map(h => ({ ...h, ativo: true }))
-    });
-    setEditingId(profissional.id);
-    setShowForm(true);
-  };
-
+  /**
+   * Função para remover um profissional
+   * @param {number} id - ID do profissional a ser removido
+   */
   const handleDelete = async (id) => {
-    if (window.confirm("Tem certeza que deseja excluir este profissional?")) {
+    if (window.confirm('Tem certeza que deseja remover este profissional?')) {
       try {
-        const response = await fetch(`http://localhost:3000/profissionais/${id}`, {
-          method: "DELETE",
-        });
-
-        if (response.ok) {
-          fetchProfissionais();
-        }
-      } catch (error) {
-        console.error("Erro ao excluir profissional:", error);
+        await api.delete(`/profissionais/${id}`);
+        setProfissionais(prev => prev.filter(prof => prof.id !== id));
+      } catch (err) {
+        console.error('Erro ao remover profissional:', err);
+        alert('Erro ao remover profissional. Tente novamente.');
       }
     }
   };
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  /**
+   * Função para iniciar o processo de agendamento
+   * @param {number} profissionalId - ID do profissional selecionado
+   */
+  const handleAgendar = (profissionalId) => {
+    navigate(`/agendamentos/novo?profissional=${profissionalId}`);
   };
 
-  const handleHorarioChange = (index, field, value) => {
-    const newHorarios = [...formData.horarios];
-    newHorarios[index] = {
-      ...newHorarios[index],
-      [field]: value
-    };
-    setFormData({
-      ...formData,
-      horarios: newHorarios
-    });
-  };
+  // Renderização condicional baseada no estado de loading e erro
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-text">Carregando profissionais...</p>
+      </div>
+    );
+  }
 
-  const toggleDiaAtivo = (index) => {
-    const newHorarios = [...formData.horarios];
-    newHorarios[index] = {
-      ...newHorarios[index],
-      ativo: !newHorarios[index].ativo
-    };
-    setFormData({
-      ...formData,
-      horarios: newHorarios
-    });
-  };
-
-  const resetForm = () => {
-    setFormData({
-      nome: "",
-      especialidade: "",
-      telefone: "",
-      email: "",
-      horarios: [
-        { dia: "segunda", inicio: "09:00", fim: "18:00", ativo: true },
-        { dia: "terca", inicio: "09:00", fim: "18:00", ativo: true },
-        { dia: "quarta", inicio: "09:00", fim: "18:00", ativo: true },
-        { dia: "quinta", inicio: "09:00", fim: "18:00", ativo: true },
-        { dia: "sexta", inicio: "09:00", fim: "18:00", ativo: true },
-        { dia: "sabado", inicio: "08:00", fim: "17:00", ativo: true },
-        { dia: "domingo", inicio: "00:00", fim: "00:00", ativo: false }
-      ]
-    });
-  };
-
-  const formatarHorario = (horario) => {
-    if (horario === "00:00") return "Fechado";
-    return horario;
-  };
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2 className="error-title">Ops! Algo deu errado</h2>
+        <p className="error-message">{error}</p>
+        <button 
+          className="retry-button"
+          onClick={() => window.location.reload()}
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="profissionais-container">
+      {/* Cabeçalho da página */}
       <div className="profissionais-header">
-        <h1>Profissionais</h1>
-        <button 
-          className="btn-novo-profissional"
-          onClick={() => {
-            setShowForm(true);
-            setEditingId(null);
-            resetForm();
-          }}
-        >
-          Novo Profissional
-        </button>
+        <h1 className="profissionais-title">Nossa Equipe</h1>
+        <p className="profissionais-description">
+          Conheça nossos profissionais altamente qualificados
+        </p>
+        
+        {/* Botão de adicionar (apenas para admin) */}
+        {user?.role === 'admin' && (
+          <button 
+            className="btn-novo-profissional"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancelar' : 'Novo Profissional'}
+          </button>
+        )}
       </div>
 
+      {/* Formulário de novo profissional */}
       {showForm && (
-        <div className="form-overlay">
-          <div className="form-container">
-            <h2>{editingId ? "Editar Profissional" : "Novo Profissional"}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Nome:</label>
-                <input
-                  type="text"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Especialidade:</label>
-                <input
-                  type="text"
-                  name="especialidade"
-                  value={formData.especialidade}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Telefone:</label>
-                <input
-                  type="tel"
-                  name="telefone"
-                  value={formData.telefone}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Email:</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Horários de Trabalho:</label>
-                <div className="horarios-container">
-                  {formData.horarios.map((horario, index) => (
-                    <div key={horario.dia} className="horario-item">
-                      <div className="horario-header">
-                        <label className="checkbox-label">
-                          <input
-                            type="checkbox"
-                            checked={horario.ativo}
-                            onChange={() => toggleDiaAtivo(index)}
-                          />
-                          <span className="checkmark"></span>
-                          {diasSemana.find(d => d.key === horario.dia)?.label}
-                        </label>
-                      </div>
-                      {horario.ativo && (
-                        <div className="horario-times">
-                          <input
-                            type="time"
-                            value={horario.inicio}
-                            onChange={(e) => handleHorarioChange(index, "inicio", e.target.value)}
-                          />
-                          <span>até</span>
-                          <input
-                            type="time"
-                            value={horario.fim}
-                            onChange={(e) => handleHorarioChange(index, "fim", e.target.value)}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="form-buttons">
-                <button type="submit" className="btn-salvar">
-                  {editingId ? "Atualizar" : "Salvar"}
-                </button>
-                <button 
-                  type="button" 
-                  className="btn-cancelar"
-                  onClick={() => {
-                    setShowForm(false);
-                    setEditingId(null);
-                    resetForm();
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
+        <form onSubmit={handleSubmit} className="profissional-form">
+          <div className="form-group">
+            <label htmlFor="nome">Nome:</label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              value={formData.nome}
+              onChange={handleInputChange}
+              required
+            />
           </div>
-        </div>
+
+          <div className="form-group">
+            <label htmlFor="especialidade">Especialidade:</label>
+            <input
+              type="text"
+              id="especialidade"
+              name="especialidade"
+              value={formData.especialidade}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="experiencia">Experiência:</label>
+            <input
+              type="text"
+              id="experiencia"
+              name="experiencia"
+              value={formData.experiencia}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="foto">URL da Foto:</label>
+            <input
+              type="url"
+              id="foto"
+              name="foto"
+              value={formData.foto}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="form-group checkbox">
+            <label>
+              <input
+                type="checkbox"
+                name="disponivel"
+                checked={formData.disponivel}
+                onChange={handleInputChange}
+              />
+              Disponível para agendamentos
+            </label>
+          </div>
+
+          <button type="submit" className="btn-submit">
+            Adicionar Profissional
+          </button>
+        </form>
       )}
 
-      <div className="profissionais-list">
-        {profissionais.length === 0 ? (
-          <p className="no-profissionais">Nenhum profissional encontrado.</p>
-        ) : (
-          <div className="profissionais-grid">
-            {profissionais.map((profissional) => (
-              <div key={profissional.id} className="profissional-card">
-                <div className="profissional-header">
-                  <h3>{profissional.nome}</h3>
-                  <div className="profissional-actions">
-                    <button 
-                      className="btn-editar"
-                      onClick={() => handleEdit(profissional)}
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      className="btn-excluir"
-                      onClick={() => handleDelete(profissional.id)}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                </div>
-                <div className="profissional-info">
-                  <p><strong>Especialidade:</strong> {profissional.especialidade}</p>
-                  <p><strong>Telefone:</strong> {profissional.telefone}</p>
-                  <p><strong>Email:</strong> {profissional.email}</p>
-                </div>
-                <div className="profissional-horarios">
-                  <h4>Horários de Trabalho:</h4>
-                  <div className="horarios-list">
-                    {profissional.horarios.map((horario) => (
-                      <div key={horario.dia} className="horario-display">
-                        <span className="dia">
-                          {diasSemana.find(d => d.key === horario.dia)?.label}:
-                        </span>
-                        <span className="horario">
-                          {formatarHorario(horario.inicio)} - {formatarHorario(horario.fim)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+      {/* Grid de profissionais */}
+      <div className="profissionais-grid">
+        {profissionais.map((profissional) => (
+          <div key={profissional.id} className="profissional-card">
+            {/* Imagem do profissional */}
+            <div className="profissional-image-container">
+              <img
+                src={profissional.foto || '/default-avatar.png'}
+                alt={profissional.nome}
+                className="profissional-image"
+              />
+              <div className={`status-badge ${profissional.disponivel ? 'disponivel' : 'indisponivel'}`}>
+                {profissional.disponivel ? 'Disponível' : 'Indisponível'}
               </div>
-            ))}
+            </div>
+
+            {/* Informações do profissional */}
+            <div className="profissional-info">
+              <h2 className="profissional-nome">{profissional.nome}</h2>
+              <p className="profissional-especialidade">{profissional.especialidade}</p>
+              <p className="profissional-experiencia">{profissional.experiencia}</p>
+              
+              {/* Avaliação do profissional */}
+              <div className="profissional-rating">
+                <span className="stars">★★★★★</span>
+                <span className="rating-count">(32 avaliações)</span>
+              </div>
+
+              {/* Ações do card */}
+              <div className="profissional-actions">
+                <button
+                  className="btn-agendar"
+                  onClick={() => handleAgendar(profissional.id)}
+                  disabled={!profissional.disponivel}
+                >
+                  Agendar Horário
+                </button>
+
+                {/* Botões de admin */}
+                {user?.role === 'admin' && (
+                  <button
+                    className="btn-remover"
+                    onClick={() => handleDelete(profissional.id)}
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
-}
+};
 
 export default Profissionais; 

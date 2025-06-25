@@ -1,130 +1,220 @@
+/* Container principal da página de registro */
 .register-container {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
-  padding: 20px;
-}
-
-.register-form {
-  background: white;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 450px;
-  text-align: center;
-}
-
-.register-form h1 {
-  color: #2c3e50;
-  margin-bottom: 10px;
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.register-subtitle {
-  color: #7f8c8d;
-  margin-bottom: 30px;
-  font-size: 1rem;
-}
-
-.input-field {
+  justify-content: center;
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
   position: relative;
-  margin-bottom: 25px;
+  overflow: hidden;
 }
 
-.input-field input {
-  width: 100%;
-  padding: 15px 15px 15px 50px;
-  border: 2px solid #e9ecef;
-  border-radius: 10px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-.input-field input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.input-field .icon {
+/* Efeito de padrão decorativo no fundo */
+.register-container::before {
+  content: '';
   position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #7f8c8d;
-  font-size: 1.2rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
 }
 
-.register-form button {
+/* Card do formulário de registro */
+.register-card {
   width: 100%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  max-width: 500px;
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 1;
+  /* Efeito de vidro fosco */
+  backdrop-filter: var(--backdrop-blur);
+  border: var(--glass-border);
+  /* Animação de entrada */
+  animation: slideUp 0.5s ease-out;
+}
+
+/* Cabeçalho do card */
+.register-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Logo do site */
+.register-logo {
+  font-size: var(--font-size-2xl);
+  color: var(--primary-color);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  /* Efeito de gradiente no texto */
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Título do formulário */
+.register-title {
+  font-size: var(--font-size-xl);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Subtítulo/descrição */
+.register-subtitle {
+  color: var(--text-light);
+  font-size: var(--font-size-base);
+}
+
+/* Formulário de registro */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Grupo de campos do formulário */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* Labels dos campos */
+.form-label {
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+/* Campos de entrada */
+.form-input {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  transition: var(--transition);
+  background: var(--white);
+  color: var(--text-color);
+}
+
+/* Foco nos campos */
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(64, 153, 255, 0.1);
+}
+
+/* Mensagens de erro */
+.error-message {
+  color: #dc3545;
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+
+/* Botão de registro */
+.register-button {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--primary-color);
+  color: var(--white);
   border: none;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 1.1rem;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 20px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
 }
 
-.register-form button:hover:not(:disabled) {
+/* Efeito hover no botão */
+.register-button:hover {
+  background: var(--accent-color);
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow);
 }
 
-.register-form button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+/* Ícone do botão */
+.register-button svg {
+  width: 20px;
+  height: 20px;
+  transition: var(--transition);
 }
 
+.register-button:hover svg {
+  transform: translateX(4px);
+}
+
+/* Link para login */
 .login-link {
-  margin-top: 20px;
-  color: #7f8c8d;
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  color: var(--text-light);
+  font-size: var(--font-size-sm);
 }
 
 .login-link a {
-  color: #667eea;
+  color: var(--primary-color);
   text-decoration: none;
   font-weight: 600;
+  transition: var(--transition);
 }
 
 .login-link a:hover {
+  color: var(--accent-color);
   text-decoration: underline;
 }
 
-.error-message {
-  background: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
+/* Animação de entrada */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.success-message {
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
+/* Responsividade */
+@media (max-width: 768px) {
+  .register-container {
+    padding: var(--spacing-lg);
+  }
+
+  .register-card {
+    padding: var(--spacing-lg);
+  }
 }
 
 @media (max-width: 480px) {
-  .register-form {
-    padding: 30px 20px;
+  .register-container {
+    padding: var(--spacing-md);
   }
 
-  .register-form h1 {
-    font-size: 1.8rem;
+  .register-card {
+    padding: var(--spacing-md);
+  }
+
+  .register-logo {
+    font-size: var(--font-size-xl);
+  }
+
+  .register-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .form-input {
+    font-size: var(--font-size-sm);
   }
 } 

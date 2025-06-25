@@ -1,38 +1,48 @@
 import { useState, useEffect } from "react";
+import api from "../../services/api";
 import "./Usuarios.css";
 
+/**
+ * Componente Usuarios - Página de gerenciamento de usuários
+ * Exclusivo para administradores, permite visualizar e gerenciar usuários do sistema
+ */
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
     senha: "",
-    tipo: "cliente"
+    tipo: "cliente",
+    telefone: "",
+    ativo: true
   });
 
   useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/usuarios");
+        setUsuarios(response.data);
+        setError(null);
+      } catch (err) {
+        setError("Erro ao carregar os usuários. Tente novamente mais tarde.");
+        console.error("Erro ao buscar usuários:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchUsuarios();
   }, []);
-
-  const fetchUsuarios = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/usuarios");
-      const data = await response.json();
-      setUsuarios(data);
-    } catch (error) {
-      console.error("Erro ao carregar usuários:", error);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = editingId 
-        ? `http://localhost:3000/usuarios/${editingId}`
-        : "http://localhost:3000/usuarios";
-      
+      const url = editingId ? `http://localhost:3000/usuarios/${editingId}` : "http://localhost:3000/usuarios";
       const method = editingId ? "PUT" : "POST";
       
       const response = await fetch(url, {
@@ -59,7 +69,9 @@ function Usuarios() {
       nome: usuario.nome,
       email: usuario.email,
       senha: usuario.senha,
-      tipo: usuario.tipo
+      tipo: usuario.tipo,
+      telefone: usuario.telefone,
+      ativo: usuario.ativo
     });
     setEditingId(usuario.id);
     setShowForm(true);
@@ -82,10 +94,11 @@ function Usuarios() {
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   const resetForm = () => {
@@ -93,7 +106,9 @@ function Usuarios() {
       nome: "",
       email: "",
       senha: "",
-      tipo: "cliente"
+      tipo: "cliente",
+      telefone: "",
+      ativo: true
     });
   };
 
@@ -113,10 +128,34 @@ function Usuarios() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-text">Carregando usuários...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2 className="error-title">Ops! Algo deu errado</h2>
+        <p className="error-message">{error}</p>
+        <button 
+          className="retry-button"
+          onClick={() => window.location.reload()}
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="usuarios-container">
       <div className="usuarios-header">
-        <h1>Usuários</h1>
+        <h1>Gerenciar Usuários</h1>
         <button 
           className="btn-novo-usuario"
           onClick={() => {
@@ -125,7 +164,7 @@ function Usuarios() {
             resetForm();
           }}
         >
-          Novo Usuário
+          {showForm ? 'Cancelar' : 'Novo Usuário'}
         </button>
       </div>
 
@@ -168,6 +207,17 @@ function Usuarios() {
               </div>
 
               <div className="form-group">
+                <label>Telefone:</label>
+                <input
+                  type="tel"
+                  name="telefone"
+                  value={formData.telefone}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
                 <label>Tipo:</label>
                 <select
                   name="tipo"
@@ -178,6 +228,18 @@ function Usuarios() {
                   <option value="cliente">Cliente</option>
                   <option value="admin">Administrador</option>
                 </select>
+              </div>
+
+              <div className="form-group checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="ativo"
+                    checked={formData.ativo}
+                    onChange={handleInputChange}
+                  />
+                  Usuário ativo
+                </label>
               </div>
 
               <div className="form-buttons">
@@ -227,6 +289,7 @@ function Usuarios() {
                 </div>
                 <div className="usuario-info">
                   <p><strong>Email:</strong> {usuario.email}</p>
+                  <p><strong>Telefone:</strong> {usuario.telefone}</p>
                   <p><strong>Tipo:</strong> 
                     <span className={`tipo tipo-${getTipoColor(usuario.tipo)}`}>
                       {getTipoLabel(usuario.tipo)}

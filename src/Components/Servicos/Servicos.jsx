@@ -1,8 +1,18 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 import "./Servicos.css";
 
+/**
+ * Componente Servicos - Página de serviços oferecidos
+ * Exibe a lista de serviços disponíveis na barbearia
+ */
 function Servicos() {
-  const [servicos, setServicos] = useState([]);
+  // Hook de navegação
+  const navigate = useNavigate();
+  
+  // Estados do componente
+  const [servicos, setServicos] = useState([]); // Lista de serviços
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
@@ -11,20 +21,30 @@ function Servicos() {
     preco: "",
     duracao: ""
   });
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [error, setError] = useState(null); // Estado de erro
 
+  /**
+   * Efeito para carregar os serviços ao montar o componente
+   * Faz a requisição à API e atualiza o estado
+   */
   useEffect(() => {
+    const fetchServicos = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/servicos");
+        setServicos(response.data);
+        setError(null);
+      } catch (err) {
+        setError("Erro ao carregar os serviços. Tente novamente mais tarde.");
+        console.error("Erro ao buscar serviços:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchServicos();
   }, []);
-
-  const fetchServicos = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/servicos");
-      const data = await response.json();
-      setServicos(data);
-    } catch (error) {
-      console.error("Erro ao carregar serviços:", error);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,8 +121,16 @@ function Servicos() {
     });
   };
 
-  const formatarPreco = (preco) => {
-    return `R$ ${preco.toFixed(2).replace('.', ',')}`;
+  /**
+   * Função para formatar o preço em moeda brasileira
+   * @param {number} valor - Valor a ser formatado
+   * @returns {string} Valor formatado em BRL
+   */
+  const formatarPreco = (valor) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(valor);
   };
 
   const formatarDuracao = (duracao) => {
@@ -117,10 +145,46 @@ function Servicos() {
     return `${horas}h ${minutos}min`;
   };
 
+  /**
+   * Função para iniciar o processo de agendamento
+   * @param {number} servicoId - ID do serviço selecionado
+   */
+  const handleAgendar = (servicoId) => {
+    navigate(`/agendamentos/novo?servico=${servicoId}`);
+  };
+
+  // Renderização condicional baseada no estado de loading e erro
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-text">Carregando serviços...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2 className="error-title">Ops! Algo deu errado</h2>
+        <p className="error-message">{error}</p>
+        <button 
+          className="retry-button"
+          onClick={() => window.location.reload()}
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="servicos-container">
       <div className="servicos-header">
-        <h1>Serviços</h1>
+        <h1 className="servicos-title">Nossos Serviços</h1>
+        <p className="servicos-description">
+          Conheça nossa variedade de serviços profissionais para cuidar do seu visual
+        </p>
         <button 
           className="btn-novo-servico"
           onClick={() => {
@@ -238,6 +302,20 @@ function Servicos() {
                     <span className="preco">{formatarPreco(servico.preco)}</span>
                     <span className="duracao">{formatarDuracao(servico.duracao)}</span>
                   </div>
+                </div>
+                <div className="servico-footer">
+                  <div className="disponibilidade">
+                    <span className={`disponibilidade-dot ${servico.disponivel ? '' : 'indisponivel'}`}></span>
+                    <span>{servico.disponivel ? 'Disponível' : 'Indisponível'}</span>
+                  </div>
+                  <button
+                    className="agendar-button"
+                    onClick={() => handleAgendar(servico.id)}
+                    disabled={!servico.disponivel}
+                  >
+                    <i className="fas fa-calendar-alt"></i>
+                    Agendar
+                  </button>
                 </div>
               </div>
             ))}
