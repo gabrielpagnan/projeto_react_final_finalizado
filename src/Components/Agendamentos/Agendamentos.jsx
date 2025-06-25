@@ -15,6 +15,8 @@ const Agendamentos = () => {
 
   // Estados do componente
   const [agendamentos, setAgendamentos] = useState([]); // Lista de agendamentos
+  const [servicos, setServicos] = useState([]); // Lista de serviços
+  const [profissionais, setProfissionais] = useState([]); // Lista de profissionais
   const [loading, setLoading] = useState(true); // Estado de carregamento
   const [error, setError] = useState(null); // Estado de erro
   const [filtro, setFiltro] = useState('todos'); // Filtro de status
@@ -24,26 +26,41 @@ const Agendamentos = () => {
    * Faz a requisição à API e atualiza o estado
    */
   useEffect(() => {
-    const fetchAgendamentos = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        // Se for admin, busca todos os agendamentos, senão busca apenas do usuário
-        const endpoint = user?.role === 'admin' 
-          ? '/agendamentos'
-          : `/agendamentos?userId=${user.id}`;
         
-        const response = await api.get(endpoint);
-        setAgendamentos(response.data);
+        // Buscar todos os dados necessários em paralelo
+        const [agendamentosRes, servicosRes, profissionaisRes] = await Promise.all([
+          api.get('/agendamentos'),
+          api.get('/servicos'),
+          api.get('/profissionais')
+        ]);
+
+        // Criar mapas para busca rápida
+        const servicosMap = new Map(servicosRes.data.map(s => [s.id, s]));
+        const profissionaisMap = new Map(profissionaisRes.data.map(p => [p.id, p]));
+
+        // Enriquecer os agendamentos com dados relacionados
+        const agendamentosEnriquecidos = agendamentosRes.data.map(ag => ({
+          ...ag,
+          servico: servicosMap.get(ag.servicoId) || { nome: 'Serviço não encontrado' },
+          profissional: profissionaisMap.get(ag.profissionalId) || { nome: 'Profissional não encontrado' }
+        }));
+
+        setAgendamentos(agendamentosEnriquecidos);
+        setServicos(servicosRes.data);
+        setProfissionais(profissionaisRes.data);
         setError(null);
       } catch (err) {
-        setError('Erro ao carregar os agendamentos. Tente novamente mais tarde.');
-        console.error('Erro ao buscar agendamentos:', err);
+        console.error('Erro ao carregar dados:', err);
+        setError('Erro ao carregar os dados. Por favor, tente novamente mais tarde.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAgendamentos();
+    fetchData();
   }, [user]);
 
   /**
@@ -51,14 +68,12 @@ const Agendamentos = () => {
    * @param {string} dataHora - String de data e hora no formato ISO
    * @returns {string} Data e hora formatadas
    */
-  const formatarDataHora = (dataHora) => {
-    return new Date(dataHora).toLocaleString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatarData = (data) => {
+    try {
+      return new Date(data).toLocaleDateString('pt-BR');
+    } catch (err) {
+      return 'Data inválida';
+    }
   };
 
   /**
@@ -165,58 +180,58 @@ const Agendamentos = () => {
 
       {/* Tabela de agendamentos */}
       <div className="agendamentos-table-container">
-        <table className="agendamentos-table">
-          <thead>
-            <tr>
-              <th>Data/Hora</th>
-              <th>Serviço</th>
-              <th>Profissional</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtrarAgendamentos(agendamentos).map((agendamento) => (
-              <tr key={agendamento.id}>
-                <td>{formatarDataHora(agendamento.dataHora)}</td>
-                <td>{agendamento.servico.nome}</td>
-                <td>{agendamento.profissional.nome}</td>
-                <td>
-                  <span className={`status-badge ${agendamento.status}`}>
-                    {agendamento.status}
-                  </span>
-                </td>
-                <td>
-                  {/* Ações disponíveis baseadas no status e papel do usuário */}
-                  {agendamento.status === 'pendente' && (
-                    <>
-                      {user?.role === 'admin' && (
-                        <button
-                          className="btn-concluir"
-                          onClick={() => handleConcluir(agendamento.id)}
-                        >
-                          Concluir
-                        </button>
-                      )}
-                      <button
-                        className="btn-cancelar"
-                        onClick={() => handleCancelar(agendamento.id)}
-                      >
-                        Cancelar
-                      </button>
-                    </>
-                  )}
-                </td>
+        {agendamentos.length === 0 ? (
+          <div className="no-data-message">
+            Nenhum agendamento encontrado.
+          </div>
+        ) : (
+          <table className="agendamentos-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Serviço</th>
+                <th>Profissional</th>
+                <th>Status</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Mensagem quando não há agendamentos */}
-        {filtrarAgendamentos(agendamentos).length === 0 && (
-          <p className="no-agendamentos">
-            Nenhum agendamento {filtro !== 'todos' ? `${filtro} ` : ''}encontrado.
-          </p>
+            </thead>
+            <tbody>
+              {filtrarAgendamentos(agendamentos).map((agendamento) => (
+                <tr key={agendamento.id}>
+                  <td>{formatarData(agendamento.data)}</td>
+                  <td>{agendamento.horario || 'Não definido'}</td>
+                  <td>{agendamento.servico?.nome || 'Serviço não encontrado'}</td>
+                  <td>{agendamento.profissional?.nome || 'Profissional não encontrado'}</td>
+                  <td>
+                    <span className={`status-badge ${agendamento.status || 'pendente'}`}>
+                      {agendamento.status || 'pendente'}
+                    </span>
+                  </td>
+                  <td>
+                    {(agendamento.status === 'pendente' || !agendamento.status) && (
+                      <>
+                        {user?.tipo === 'admin' && (
+                          <button
+                            className="btn-concluir"
+                            onClick={() => handleConcluir(agendamento.id)}
+                          >
+                            Concluir
+                          </button>
+                        )}
+                        <button
+                          className="btn-cancelar"
+                          onClick={() => handleCancelar(agendamento.id)}
+                        >
+                          Cancelar
+                        </button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>

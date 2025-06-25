@@ -1,9 +1,18 @@
 // Importação das dependências necessárias
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 
 // Criação do contexto de autenticação
 export const AuthContext = createContext();
+
+// Hook personalizado para usar o contexto de autenticação
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+  }
+  return context;
+};
 
 /**
  * Provedor do contexto de autenticação
@@ -36,8 +45,19 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, senha) => {
     try {
-      const response = await api.post('/auth/login', { email, senha });
-      const { token, user } = response.data;
+      // Buscar usuário pelo email
+      const response = await api.get(`/usuarios?email=${email}`);
+      const users = response.data;
+
+      // Verificar se encontrou o usuário e se a senha está correta
+      const user = users.find(u => u.email === email && u.senha === senha);
+
+      if (!user) {
+        throw new Error('Credenciais inválidas');
+      }
+
+      // Gerar um token simples (em produção, use JWT adequado)
+      const token = btoa(JSON.stringify({ id: user.id, email: user.email }));
 
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
@@ -47,7 +67,11 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
       setAuthenticated(true);
     } catch (err) {
-      throw err;
+      if (err.message === 'Credenciais inválidas') {
+        throw new Error('Credenciais inválidas. Por favor, verifique seu e-mail e senha.');
+      } else {
+        throw new Error('Erro ao fazer login. Por favor, tente novamente.');
+      }
     }
   };
 

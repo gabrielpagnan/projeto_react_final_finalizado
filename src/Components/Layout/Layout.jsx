@@ -10,7 +10,7 @@ import './Layout.css';
  */
 const Layout = () => {
   return (
-    <div className="layout">
+    <div className="layout-container">
       {/* Barra de navegação fixa no topo */}
       <Navbar />
 

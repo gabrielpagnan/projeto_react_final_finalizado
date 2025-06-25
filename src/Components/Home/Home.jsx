@@ -1,320 +1,116 @@
-import { FaUsers, FaCut, FaCalendarAlt, FaUserTie, FaStar, FaMapMarkerAlt, FaPhone, FaClock, FaInstagram, FaFacebook } from "react-icons/fa";
-import { useState, useEffect } from "react";
-import "./Home.css";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/auth';
+import './Home.css';
 
 /**
  * Componente Home - Página inicial do sistema
  * Apresenta uma landing page com informações sobre a barbearia
  */
 function Home() {
-  const [stats, setStats] = useState({
-    agendamentos: 0,
-    profissionais: 0,
-    servicos: 0,
-    usuarios: 0
-  });
-
-  // Hook de navegação
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      const [agendamentosRes, profissionaisRes, servicosRes, usuariosRes] = await Promise.all([
-        fetch("http://localhost:3000/agendamentos"),
-        fetch("http://localhost:3000/profissionais"),
-        fetch("http://localhost:3000/servicos"),
-        fetch("http://localhost:3000/usuarios")
-      ]);
-
-      const [agendamentosData, profissionaisData, servicosData, usuariosData] = await Promise.all([
-        agendamentosRes.json(),
-        profissionaisRes.json(),
-        servicosRes.json(),
-        usuariosRes.json()
-      ]);
-
-      setStats({
-        agendamentos: agendamentosData.length,
-        profissionais: profissionaisData.length,
-        servicos: servicosData.length,
-        usuarios: usuariosData.filter(u => u.tipo === "cliente").length
-      });
-    } catch (error) {
-      console.error("Erro ao carregar estatísticas:", error);
-    }
-  };
+  const { user } = useAuth();
 
   return (
     <div className="home">
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1 className="hero-title">
-            Estilo e Tradição em Cada Corte
-          </h1>
-          <p className="hero-subtitle">
-            Transforme seu visual com os melhores profissionais da cidade
-          </p>
+          <h1 className="hero-title">Barbearia Express</h1>
+          <p className="hero-subtitle">Agende seu horário com os melhores profissionais</p>
+          
           <div className="hero-stats">
             <div className="hero-stat">
-              <span className="stat-number">{stats.profissionais}+</span>
+              <span className="stat-number">0+</span>
               <span className="stat-label">Profissionais</span>
             </div>
             <div className="hero-stat">
-              <span className="stat-number">{stats.servicos}+</span>
+              <span className="stat-number">0+</span>
               <span className="stat-label">Serviços</span>
             </div>
             <div className="hero-stat">
-              <span className="stat-number">{stats.usuarios}+</span>
-              <span className="stat-label">Clientes Satisfeitos</span>
+              <span className="stat-number">0+</span>
+              <span className="stat-label">Clientes</span>
             </div>
           </div>
+
           <button 
             className="cta-button"
-            onClick={() => navigate('/agendamentos/novo')}
+            onClick={() => navigate(user ? '/agendamentos' : '/login')}
           >
-            Agende Agora
+            {user ? 'Agendar Agora' : 'Fazer Login'}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
           </button>
         </div>
-        <div className="hero-image">
-          <div className="barbershop-preview"></div>
-        </div>
       </section>
 
-      {/* Seção de Destaques */}
-      <section className="features-section">
-        <h2 className="section-title">Por que nos escolher?</h2>
-        <div className="features-grid">
-          {/* Card de Profissionais */}
-          <div className="feature-card">
-            <i className="fas fa-cut"></i>
-            <h3>Profissionais Experientes</h3>
-            <p>
-              Nossa equipe é formada por barbeiros altamente qualificados e 
-              experientes no mercado.
-            </p>
-          </div>
-
-          {/* Card de Ambiente */}
-          <div className="feature-card">
-            <i className="fas fa-home"></i>
-            <h3>Ambiente Acolhedor</h3>
-            <p>
-              Um espaço moderno e confortável para você relaxar enquanto cuida 
-              do visual.
-            </p>
-          </div>
-
-          {/* Card de Produtos */}
-          <div className="feature-card">
-            <i className="fas fa-spray-can"></i>
-            <h3>Produtos Premium</h3>
-            <p>
-              Utilizamos apenas produtos de alta qualidade para garantir os 
-              melhores resultados.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Seção de Serviços */}
       <section className="services-section">
         <h2 className="section-title">Nossos Serviços</h2>
         <div className="services-grid">
-          {/* Card de Corte */}
           <div className="service-card">
-            <img 
-              src="/images/corte.jpg" 
-              alt="Corte de Cabelo"
-              className="service-image"
-            />
+            <div className="service-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 20l4-16h2l4 16"></path>
+                <path d="M17 4h1a2 2 0 0 1 2 2v1"></path>
+                <path d="M7 4H6a2 2 0 0 0-2 2v1"></path>
+                <line x1="12" y1="11" x2="12" y2="13"></line>
+              </svg>
+            </div>
             <h3>Corte de Cabelo</h3>
-            <p>
-              Cortes modernos e clássicos para todos os estilos
-            </p>
-            <button 
-              className="service-button"
-              onClick={() => navigate('/servicos')}
-            >
-              Ver Mais
+            <p>Cortes modernos e tradicionais para todos os estilos</p>
+            <button className="service-button" onClick={() => navigate(user ? '/agendamentos' : '/login')}>
+              Agendar
             </button>
           </div>
 
-          {/* Card de Barba */}
           <div className="service-card">
-            <img 
-              src="/images/barba.jpg" 
-              alt="Barba"
-              className="service-image"
-            />
+            <div className="service-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6"></path>
+                <path d="M3 11l9 9 9-9"></path>
+              </svg>
+            </div>
             <h3>Barba</h3>
-            <p>
-              Modelagem e tratamento completo para sua barba
-            </p>
-            <button 
-              className="service-button"
-              onClick={() => navigate('/servicos')}
-            >
-              Ver Mais
+            <p>Modelagem e aparação de barba com produtos premium</p>
+            <button className="service-button" onClick={() => navigate(user ? '/agendamentos' : '/login')}>
+              Agendar
             </button>
           </div>
 
-          {/* Card de Tratamentos */}
           <div className="service-card">
-            <img 
-              src="/images/tratamento.jpg" 
-              alt="Tratamentos"
-              className="service-image"
-            />
+            <div className="service-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+              </svg>
+            </div>
             <h3>Tratamentos</h3>
-            <p>
-              Hidratação, reconstrução e outros cuidados
-            </p>
-            <button 
-              className="service-button"
-              onClick={() => navigate('/servicos')}
-            >
-              Ver Mais
+            <p>Hidratação, relaxamento e outros cuidados especiais</p>
+            <button className="service-button" onClick={() => navigate(user ? '/agendamentos' : '/login')}>
+              Agendar
             </button>
           </div>
         </div>
       </section>
 
-      {/* Seção de Depoimentos */}
-      <section className="testimonials-section">
-        <h2 className="section-title">O que dizem nossos clientes</h2>
-        <div className="testimonials-grid">
-          {/* Depoimento 1 */}
-          <div className="testimonial-card">
-            <div className="testimonial-content">
-              <p>
-                "Excelente atendimento e profissionais muito capacitados. 
-                Sempre saio satisfeito!"
-              </p>
-            </div>
-            <div className="testimonial-author">
-              <img 
-                src="/images/client1.jpg" 
-                alt="João Silva"
-                className="author-image"
-              />
-              <div className="author-info">
-                <h4>João Silva</h4>
-                <div className="rating">★★★★★</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Depoimento 2 */}
-          <div className="testimonial-card">
-            <div className="testimonial-content">
-              <p>
-                "O ambiente é muito agradável e o resultado sempre supera 
-                as expectativas!"
-              </p>
-            </div>
-            <div className="testimonial-author">
-              <img 
-                src="/images/client2.jpg" 
-                alt="Pedro Santos"
-                className="author-image"
-              />
-              <div className="author-info">
-                <h4>Pedro Santos</h4>
-                <div className="rating">★★★★★</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Depoimento 3 */}
-          <div className="testimonial-card">
-            <div className="testimonial-content">
-              <p>
-                "Profissionais muito atenciosos e preços justos. 
-                Recomendo a todos!"
-              </p>
-            </div>
-            <div className="testimonial-author">
-              <img 
-                src="/images/client3.jpg" 
-                alt="Lucas Oliveira"
-                className="author-image"
-              />
-              <div className="author-info">
-                <h4>Lucas Oliveira</h4>
-                <div className="rating">★★★★★</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Seção de Contato */}
-      <section className="contact-section">
-        <div className="contact-content">
-          <h2 className="section-title">Venha nos Conhecer</h2>
-          <div className="contact-info">
-            <div className="contact-item">
-              <i className="fas fa-map-marker-alt"></i>
-              <p>Rua Exemplo, 123 - Centro</p>
-            </div>
-            <div className="contact-item">
-              <i className="fas fa-phone"></i>
-              <p>(11) 1234-5678</p>
-            </div>
-            <div className="contact-item">
-              <i className="fas fa-clock"></i>
-              <p>Seg a Sáb: 9h às 20h</p>
-            </div>
-          </div>
-          <div className="social-links">
-            <a href="#" className="social-link">
-              <i className="fab fa-instagram"></i>
-            </a>
-            <a href="#" className="social-link">
-              <i className="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" className="social-link">
-              <i className="fab fa-whatsapp"></i>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
       <footer className="home-footer">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>Barbearia Express</h3>
-            <p>Estilo e qualidade em cada corte. Sua barbearia de confiança em Florianópolis.</p>
+            <h3>Sobre Nós</h3>
+            <p>Somos especialistas em cuidados masculinos, oferecendo serviços de alta qualidade em um ambiente acolhedor.</p>
           </div>
           <div className="footer-section">
-            <h4>Serviços</h4>
-            <ul>
-              <li>Corte Masculino - R$ 35</li>
-              <li>Barba - R$ 25</li>
-              <li>Corte + Barba - R$ 50</li>
-              <li>Hidratação - R$ 40</li>
-              <li>Platinado - R$ 250</li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h4>Horário de Funcionamento</h4>
-            <p>Segunda a Sexta: 9h às 18h</p>
-            <p>Sábado: 8h às 17h</p>
+            <h3>Horário de Funcionamento</h3>
+            <p>Segunda a Sábado: 9h às 20h</p>
             <p>Domingo: Fechado</p>
           </div>
           <div className="footer-section">
-            <h4>Contato</h4>
-            <p>📞 (48) 3333-4444</p>
-            <p>📍 Rua das Barbearias, 123 - Centro</p>
-            <p>📧 contato@barbearia.com</p>
-            <p>🌐 Florianópolis/SC</p>
+            <h3>Contato</h3>
+            <p>Telefone: (00) 0000-0000</p>
+            <p>Email: contato@barbearia.com</p>
           </div>
         </div>
         <div className="footer-bottom">

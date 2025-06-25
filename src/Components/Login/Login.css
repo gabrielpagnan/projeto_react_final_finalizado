@@ -1,19 +1,16 @@
-/* Container principal do login */
+/* Container principal */
 .login-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--spacing-md);
-  /* Gradiente de fundo animado */
-  background: linear-gradient(135deg,
-    var(--secondary-color) 0%,
-    var(--primary-color) 100%);
+  padding: 1rem;
+  background: linear-gradient(135deg, #2c3e50, #3498db);
   position: relative;
   overflow: hidden;
 }
 
-/* Efeito de padrão decorativo no fundo */
+/* Efeito de fundo */
 .login-container::before {
   content: '';
   position: absolute;
@@ -21,174 +18,274 @@
   left: 0;
   right: 0;
   bottom: 0;
-  /* Padrão de pontos com gradiente */
   background: 
-    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-  opacity: 0.6;
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  pointer-events: none;
 }
 
-/* Card do formulário de login */
+/* Card de login */
 .login-card {
   width: 100%;
   max-width: 400px;
-  padding: var(--spacing-xl);
-  /* Efeito de vidro fosco */
-  background: var(--glass-background);
-  backdrop-filter: var(--backdrop-blur);
-  border: var(--glass-border);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  z-index: 1;
-  /* Animação de entrada */
-  animation: fadeIn 0.5s ease-out;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease;
 }
 
-/* Título do login */
+/* Título e subtítulo */
 .login-title {
-  font-size: var(--font-size-2xl);
-  color: var(--white);
-  margin-bottom: var(--spacing-lg);
-  text-align: center;
+  color: white;
+  font-size: 2rem;
   font-weight: 600;
-  /* Efeito de texto gradiente */
-  background: linear-gradient(135deg, var(--white), rgba(255, 255, 255, 0.8));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
-/* Container do formulário */
+.login-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+/* Formulário */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 1.5rem;
 }
 
-/* Grupo de input (label + campo) */
+/* Grupo de input */
 .form-group {
   position: relative;
 }
 
-/* Labels dos campos */
-.form-group label {
-  display: block;
-  margin-bottom: var(--spacing-xs);
-  color: var(--white);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
+/* Campo de input */
+.input-field {
+  position: relative;
 }
 
-/* Campos de input */
-.form-group input {
+.input-field input {
   width: 100%;
-  padding: var(--spacing-md);
+  padding: 1rem;
+  padding-left: 3rem;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--border-radius);
-  color: var(--white);
-  font-size: var(--font-size-base);
-  transition: var(--transition);
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-/* Estado de foco dos inputs */
-.form-group input:focus {
+.input-field input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.input-field input:focus {
   outline: none;
-  border-color: var(--accent-color);
+  border-color: #3498db;
   background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(64, 153, 255, 0.1);
 }
 
-/* Placeholder dos inputs */
-.form-group input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+.input-field .icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem;
+}
+
+/* Campo com erro */
+.input-field input.error {
+  border-color: #e74c3c;
+}
+
+/* Mensagem de erro */
+.error-message {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  animation: shake 0.5s ease;
+}
+
+/* Opções do formulário */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+  accent-color: #3498db;
+}
+
+.forgot-password {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: white;
 }
 
 /* Botão de login */
 .login-button {
   width: 100%;
-  padding: var(--spacing-md);
-  margin-top: var(--spacing-md);
-  background: var(--accent-color);
-  color: var(--white);
+  padding: 1rem;
+  background: #3498db;
   border: none;
-  border-radius: var(--border-radius);
-  font-size: var(--font-size-base);
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
-  position: relative;
-  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-/* Efeito hover do botão */
 .login-button:hover {
-  background: var(--primary-color);
+  background: #2980b9;
   transform: translateY(-2px);
-  box-shadow: var(--shadow);
 }
 
-/* Efeito de brilho no botão */
-.login-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  transition: 0.5s;
+.login-button:disabled {
+  background: rgba(52, 152, 219, 0.5);
+  cursor: not-allowed;
+  transform: none;
 }
 
-/* Animação do efeito de brilho */
-.login-button:hover::before {
-  left: 100%;
+/* Spinner de carregamento */
+.spinner {
+  animation: spin 1s linear infinite;
 }
 
-/* Link para registro */
+/* Link de registro */
 .register-link {
-  display: block;
   text-align: center;
-  margin-top: var(--spacing-lg);
-  color: var(--white);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+}
+
+.register-link a {
+  color: #3498db;
   text-decoration: none;
-  font-size: var(--font-size-sm);
-  transition: var(--transition);
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
-/* Hover do link de registro */
-.register-link:hover {
-  color: var(--accent-color);
+.register-link a:hover {
+  color: white;
 }
 
-/* Mensagens de erro */
-.error-message {
-  color: #ff4d4d;
-  font-size: var(--font-size-sm);
-  margin-top: var(--spacing-xs);
+/* Contas de demonstração */
+.demo-accounts {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.demo-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
   text-align: center;
-  animation: shake 0.5s ease-in-out;
 }
 
-/* Animação de shake para erros */
+.demo-account {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.demo-account strong {
+  color: white;
+  margin-right: 0.5rem;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Responsividade */
 @media (max-width: 480px) {
   .login-card {
-    padding: var(--spacing-lg);
+    padding: 1.5rem;
   }
-  
+
   .login-title {
-    font-size: var(--font-size-xl);
+    font-size: 1.75rem;
   }
+
+  .input-field input {
+    font-size: 0.875rem;
+  }
+}
+
+/* Botão de voltar */
+.back-button {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-5px);
+}
+
+.back-button svg {
+  font-size: 1.2rem;
 }

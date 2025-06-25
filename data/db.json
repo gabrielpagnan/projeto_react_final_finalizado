@@ -193,7 +193,7 @@
       "data": "2025-12-12",
       "horario": "13:35",
       "observacoes": "",
-      "status": "pendente"
+      "status": "concluido"
     },
     {
       "id": "b2b2",
@@ -203,7 +203,7 @@
       "data": "2025-06-14",
       "horario": "14:45",
       "observacoes": "",
-      "status": "pendente"
+      "status": "concluido"
     },
     {
       "id": "6b13",
@@ -213,7 +213,7 @@
       "data": "2025-06-17",
       "horario": "19:09",
       "observacoes": "",
-      "status": "pendente"
+      "status": "cancelado"
     }
   ]
 }

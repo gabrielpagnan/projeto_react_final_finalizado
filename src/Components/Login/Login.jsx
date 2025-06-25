@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser, FaLock, FaSpinner, FaArrowLeft } from "react-icons/fa";
 import "./Login.css";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from '../../contexts/auth';
@@ -20,6 +20,26 @@ const Login = () => {
   });
   const [error, setError] = useState(null); // Estado de erro
   const [loading, setLoading] = useState(false); // Estado de carregamento
+  const [touched, setTouched] = useState({
+    email: false,
+    senha: false
+  });
+
+  // Validação de campos
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'email':
+        if (!value) return 'E-mail é obrigatório';
+        if (!/\S+@\S+\.\S+/.test(value)) return 'E-mail inválido';
+        return '';
+      case 'senha':
+        if (!value) return 'Senha é obrigatória';
+        if (value.length < 6) return 'Senha deve ter no mínimo 6 caracteres';
+        return '';
+      default:
+        return '';
+    }
+  };
 
   /**
    * Função para lidar com mudanças nos campos do formulário
@@ -35,12 +55,30 @@ const Login = () => {
     setError(null);
   };
 
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({
+      ...prev,
+      [name]: true
+    }));
+  };
+
   /**
    * Função para enviar o formulário de login
    * @param {Event} e - Evento de submit do formulário
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Valida todos os campos antes de enviar
+    const emailError = validateField('email', formData.email);
+    const senhaError = validateField('senha', formData.senha);
+    
+    if (emailError || senhaError) {
+      setError(emailError || senhaError);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -50,62 +88,111 @@ const Login = () => {
     } catch (err) {
       setError(
         err.response?.data?.message || 
-        'Erro ao fazer login. Por favor, tente novamente.'
+        'Credenciais inválidas. Por favor, verifique seu e-mail e senha.'
       );
     } finally {
       setLoading(false);
     }
   };
 
+  const getFieldError = (fieldName) => {
+    if (touched[fieldName]) {
+      return validateField(fieldName, formData[fieldName]);
+    }
+    return '';
+  };
+
   return (
-    <div className="container">
-      <form onSubmit={handleSubmit}>
-        <h1>Acesse o sistema</h1>
+    <div className="login-container">
+      <button 
+        className="back-button"
+        onClick={() => navigate('/')}
+      >
+        <FaArrowLeft /> Voltar para página inicial
+      </button>
+      
+      <div className="login-card">
+        <h1 className="login-title">Bem-vindo(a)!</h1>
         <p className="login-subtitle">Faça login para continuar</p>
         
-        <div className="input-field">
-          <input
-            type="text"
-            placeholder="E-mail"
-            required
-            value={formData.email}
-            onChange={handleInputChange}
-            name="email"
-          />
-          <FaUser className="icon" />
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <div className="input-field">
+              <input
+                type="email"
+                placeholder="E-mail"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                className={touched.email && getFieldError('email') ? 'error' : ''}
+              />
+              <FaUser className="icon" />
+            </div>
+            {touched.email && getFieldError('email') && (
+              <span className="error-message">{getFieldError('email')}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <div className="input-field">
+              <input
+                type="password"
+                placeholder="Senha"
+                name="senha"
+                value={formData.senha}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                className={touched.senha && getFieldError('senha') ? 'error' : ''}
+              />
+              <FaLock className="icon" />
+            </div>
+            {touched.senha && getFieldError('senha') && (
+              <span className="error-message">{getFieldError('senha')}</span>
+            )}
+          </div>
+
+          <div className="form-options">
+            <label className="remember-me">
+              <input type="checkbox" /> Lembrar-me
+            </label>
+            <Link to="/forgot-password" className="forgot-password">
+              Esqueceu a senha?
+            </Link>
+          </div>
+
+          {error && <div className="error-message">{error}</div>}
+
+          <button 
+            type="submit" 
+            className="login-button" 
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <FaSpinner className="spinner" />
+                Entrando...
+              </>
+            ) : (
+              'Entrar'
+            )}
+          </button>
+
+          <div className="register-link">
+            Não tem uma conta? <Link to="/register">Criar conta</Link>
+          </div>
+        </form>
+
+        <div className="demo-accounts">
+          <p className="demo-title">Contas para teste:</p>
+          <div className="demo-account">
+            <strong>Admin:</strong> admin@barbearia.com / admin123
+          </div>
+          <div className="demo-account">
+            <strong>Cliente:</strong> joao@email.com / 123456
+          </div>
         </div>
-        <div className="input-field">
-          <input
-            type="password"
-            placeholder="Senha"
-            required
-            value={formData.senha}
-            onChange={handleInputChange}
-            name="senha"
-          />
-          <FaLock className="icon" />
-        </div>
-        <div className="recall-forget">
-          <label>
-            <input type="checkbox" /> Lembre de mim
-          </label>
-          <a href="#">Esqueceu sua senha?</a>
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit" disabled={loading}>
-          {loading ? "Entrando..." : "Login"}
-        </button>
-        <div className="signup-link">
-          <p>
-            Não tem uma conta? <Link to="/register">Registrar</Link>
-          </p>
-        </div>
-        
-        <div className="admin-info">
-          <p><strong>Admin:</strong> admin@barbearia.com / admin123</p>
-          <p><strong>Cliente:</strong> joao@email.com / 123456</p>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
