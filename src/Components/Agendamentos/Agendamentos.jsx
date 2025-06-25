@@ -15,8 +15,8 @@ const Agendamentos = () => {
 
   // Estados do componente
   const [agendamentos, setAgendamentos] = useState([]); // Lista de agendamentos
-  const [servicos, setServicos] = useState([]); // Lista de serviços
-  const [profissionais, setProfissionais] = useState([]); // Lista de profissionais
+  const [_servicos, setServicos] = useState([]); // Lista de serviços
+  const [_profissionais, setProfissionais] = useState([]); // Lista de profissionais
   const [loading, setLoading] = useState(true); // Estado de carregamento
   const [error, setError] = useState(null); // Estado de erro
   const [filtro, setFiltro] = useState('todos'); // Filtro de status
