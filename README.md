@@ -124,8 +124,8 @@ O sistema utiliza um banco de dados JSON com as seguintes entidades:
 ## 🔐 Credenciais de Acesso
 
 ### Administrador
-- Email: maria@email.com
-- Senha: 123456
+- Email: admin@barbearia.com
+- Senha: admin123
 
 ### Cliente
 - Email: joao@email.com
