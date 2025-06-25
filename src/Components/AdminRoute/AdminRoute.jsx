@@ -20,7 +20,7 @@ const AdminRoute = ({ children }) => {
   }
 
   // Se não for admin, redireciona para a home
-  if (user?.role !== 'admin') {
+  if (user?.tipo !== 'admin') {
     return <Navigate to="/" />;
   }
 

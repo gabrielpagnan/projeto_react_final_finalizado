@@ -10,15 +10,6 @@
       "telefone": "(48) 99999-9999"
     },
     {
-      "id": "2",
-      "nome": "Maria Santos",
-      "email": "maria@email.com",
-      "senha": "123456",
-      "tipo": "admin",
-      "cpf": "987.654.321-00",
-      "telefone": "(48) 88888-8888"
-    },
-    {
       "id": "3",
       "nome": "Administrador",
       "email": "admin@barbearia.com",
@@ -35,14 +26,24 @@
       "id": "ebf4"
     },
     {
-      "id": "a9db",
-      "nome": "gabriel",
-      "email": "gabriel@gmail.com",
+      "nome": "Duda",
+      "email": "duda@gmail.com",
+      "senha": "12345678",
+      "tipo": "cliente",
+      "telefone": "123456789",
+      "ativo": true,
+      "id": "9abe"
+    },
+    {
+      "id": "91d2",
+      "nome": "Manuella P Barato",
+      "email": "mpbarato@gmail.com",
       "cpf": "00000000000",
-      "telefone": "00000000000",
+      "telefone": "(48) 98824-3105",
       "senha": "123456",
       "tipo": "cliente",
-      "dataCriacao": "2025-06-17T19:24:53.692Z"
+      "dataCriacao": "2025-06-25T16:06:32.648Z",
+      "ativo": true
     }
   ],
   "profissionais": [
@@ -135,6 +136,14 @@
         }
       ],
       "id": "2"
+    },
+    {
+      "id": "83cb",
+      "nome": "duda",
+      "especialidade": "platinado",
+      "experiencia": "2 anos",
+      "foto": "https://123",
+      "disponivel": true
     }
   ],
   "servicos": [
@@ -143,48 +152,43 @@
       "nome": "Corte Masculino",
       "descricao": "Corte tradicional masculino",
       "preco": 35,
-      "duracao": 30
+      "duracao": 30,
+      "disponivel": true
     },
     {
       "id": "2",
       "nome": "Barba",
       "descricao": "Fazer a barba",
       "preco": 25,
-      "duracao": 20
+      "duracao": 20,
+      "disponivel": true
     },
     {
       "id": "3",
       "nome": "Corte + Barba",
       "descricao": "Corte masculino + fazer a barba",
       "preco": 50,
-      "duracao": 45
+      "duracao": 45,
+      "disponivel": true
     },
     {
       "id": "4",
       "nome": "Hidratação",
       "descricao": "Hidratação capilar",
       "preco": 40,
-      "duracao": 25
+      "duracao": 25,
+      "disponivel": true
     },
     {
       "id": "1e82",
       "nome": "platinado",
       "descricao": "descoloração do cabelo",
       "preco": 250,
-      "duracao": 180
+      "duracao": 180,
+      "disponivel": true
     }
   ],
   "agendamentos": [
-    {
-      "id": "1",
-      "clienteId": "1",
-      "profissionalId": "1",
-      "servicoId": "1",
-      "data": "2024-01-15",
-      "horario": "14:00",
-      "status": "confirmado",
-      "observacoes": "Primeira vez"
-    },
     {
       "id": "9711",
       "clienteId": "1",
@@ -216,11 +220,12 @@
       "status": "cancelado"
     },
     {
-      "id": "8165",
+      "id": "d9e6",
       "servicoId": "1",
-      "profissionalId": "1",
-      "data": "2025-06-25",
-      "horario": "17:00",
+      "profissionalId": "2",
+      "data": "2012-12-12",
+      "horario": "12:45",
+      "clienteId": "91d2",
       "status": "pendente"
     }
   ]

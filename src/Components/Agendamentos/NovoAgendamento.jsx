@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
 import './Agendamentos.css';
+import { AuthContext } from '../../contexts/auth';
 
 const NovoAgendamento = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useContext(AuthContext);
   const [servicos, setServicos] = useState([]);
   const [profissionais, setProfissionais] = useState([]);
   const [formData, setFormData] = useState({
@@ -28,6 +31,13 @@ const NovoAgendamento = () => {
         setServicos(servicosRes.data);
         setProfissionais(profissionaisRes.data);
         setError(null);
+
+        // Pré-selecionar profissional se vier na query string
+        const params = new URLSearchParams(location.search);
+        const profissionalId = params.get('profissional');
+        if (profissionalId) {
+          setFormData(prev => ({ ...prev, profissionalId: String(profissionalId) }));
+        }
       } catch (err) {
         console.error('Erro ao carregar dados:', err);
         setError('Erro ao carregar os dados. Por favor, tente novamente mais tarde.');
@@ -37,7 +47,7 @@ const NovoAgendamento = () => {
     };
 
     fetchData();
-  }, []);
+  }, [location.search]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,6 +62,7 @@ const NovoAgendamento = () => {
     try {
       await api.post('/agendamentos', {
         ...formData,
+        clienteId: user?.id,
         status: 'pendente'
       });
       alert('Agendamento criado com sucesso!');

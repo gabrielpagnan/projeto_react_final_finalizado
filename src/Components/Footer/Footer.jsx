@@ -54,9 +54,9 @@ function Footer() {
           {/* Seção Contato */}
           <div className="footer-section">
             <h3>Contato</h3>
-            <p>Rua Exemplo, 123</p>
-            <p>São Paulo - SP</p>
-            <p>Tel: (11) 1234-5678</p>
+            <p>Rua das Palmeiras, 456</p>
+            <p>Criciúma - SC</p>
+            <p>Tel: (48) 99876-5432</p>
             <p>Email: contato@barbearia.com</p>
           </div>
 

@@ -127,8 +127,9 @@ const Login = () => {
                 onBlur={handleBlur}
                 className={touched.email && getFieldError('email') ? 'error' : ''}
               />
-              <FaUser className="icon" />
+              {formData.email === '' && <FaUser className="icon" />}
             </div>
+            <span className="hint-text" style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.95em', fontWeight: 400 }}>Digite seu e-mail cadastrado</span>
             {touched.email && getFieldError('email') && (
               <span className="error-message">{getFieldError('email')}</span>
             )}
@@ -145,8 +146,9 @@ const Login = () => {
                 onBlur={handleBlur}
                 className={touched.senha && getFieldError('senha') ? 'error' : ''}
               />
-              <FaLock className="icon" />
+              {formData.senha === '' && <FaLock className="icon" />}
             </div>
+            <span className="hint-text" style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.95em', fontWeight: 400 }}>Digite sua senha</span>
             {touched.senha && getFieldError('senha') && (
               <span className="error-message">{getFieldError('senha')}</span>
             )}

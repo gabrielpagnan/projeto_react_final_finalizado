@@ -152,20 +152,18 @@ const Profissionais = () => {
           Conheça nossos profissionais altamente qualificados
         </p>
         
-        {/* Botão de adicionar (apenas para admin) */}
-        {user?.role === 'admin' && (
-          <button 
-            className="btn-novo-profissional"
-            onClick={() => setShowForm(!showForm)}
-          >
-            {showForm ? 'Cancelar' : 'Novo Profissional'}
-          </button>
-        )}
+        {/* Botão de adicionar novo profissional (visível para todos) */}
+        <button 
+          className="btn-novo-profissional"
+          onClick={() => setShowForm(!showForm)}
+        >
+          {showForm ? 'Cancelar' : 'Novo Profissional'}
+        </button>
       </div>
 
       {/* Formulário de novo profissional */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="profissional-form">
+        <form onSubmit={handleSubmit} className="profissional-form" style={{ marginBottom: '2rem', background: '#f9f9f9', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div className="form-group">
             <label htmlFor="nome">Nome:</label>
             <input
@@ -265,7 +263,7 @@ const Profissionais = () => {
                 <button
                   className="btn-agendar"
                   onClick={() => handleAgendar(profissional.id)}
-                  disabled={!profissional.disponivel}
+                  disabled={profissional.hasOwnProperty('disponivel') ? !profissional.disponivel : false}
                 >
                   Agendar Horário
                 </button>
