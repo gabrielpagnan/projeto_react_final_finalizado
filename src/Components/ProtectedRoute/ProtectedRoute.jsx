@@ -1,7 +1,7 @@
 // Importação das dependências necessárias
 import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/auth';
+import { AuthContext } from '../../contexts/AuthContext';
 
 /**
  * Componente ProtectedRoute - Rota protegida por autenticação

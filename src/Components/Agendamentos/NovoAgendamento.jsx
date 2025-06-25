@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
 import './Agendamentos.css';
-import { AuthContext } from '../../contexts/auth';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const NovoAgendamento = () => {
   const navigate = useNavigate();

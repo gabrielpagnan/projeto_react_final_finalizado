@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { FaUser, FaSignOutAlt, FaCalendar, FaCut, FaUsers } from "react-icons/fa";
-import { useAuth } from "../../contexts/auth";
+import { useAuth } from "../../contexts/useAuth";
 import "./Navbar.css";
 
 function Navbar() {

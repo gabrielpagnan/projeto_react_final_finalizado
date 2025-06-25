@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/auth';
+import { AuthContext } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import "./Profissionais.css";
 
@@ -26,15 +26,7 @@ const Profissionais = () => {
     disponivel: true
   });
 
-  const diasSemana = [
-    { key: "segunda", label: "Segunda-feira" },
-    { key: "terca", label: "Terça-feira" },
-    { key: "quarta", label: "Quarta-feira" },
-    { key: "quinta", label: "Quinta-feira" },
-    { key: "sexta", label: "Sexta-feira" },
-    { key: "sabado", label: "Sábado" },
-    { key: "domingo", label: "Domingo" }
-  ];
+
 
   /**
    * Efeito para carregar os profissionais ao montar o componente
@@ -263,7 +255,7 @@ const Profissionais = () => {
                 <button
                   className="btn-agendar"
                   onClick={() => handleAgendar(profissional.id)}
-                  disabled={profissional.hasOwnProperty('disponivel') ? !profissional.disponivel : false}
+                  disabled={'disponivel' in profissional ? !profissional.disponivel : false}
                 >
                   Agendar Horário
                 </button>

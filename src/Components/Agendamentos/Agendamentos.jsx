@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/auth';
+import { AuthContext } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import "./Agendamentos.css";
 
@@ -245,6 +245,11 @@ const Agendamentos = () => {
                   <td>{agendamento.servico?.nome || 'Serviço não encontrado'}</td>
                   <td>{agendamento.profissional?.nome || 'Profissional não encontrado'}</td>
                   <td>{agendamento.clienteNome || agendamento.clienteId || '-'}</td>
+                  <td>
+                    <span className={getStatusInfo(agendamento.status).className}>
+                      {getStatusInfo(agendamento.status).text}
+                    </span>
+                  </td>
                   <td>
                     <div className="action-buttons">
                       {(agendamento.status === 'pendente' || !agendamento.status) && (

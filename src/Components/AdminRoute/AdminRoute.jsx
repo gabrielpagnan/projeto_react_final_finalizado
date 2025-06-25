@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/auth';
+import { AuthContext } from '../../contexts/AuthContext';
 
 /**
  * Componente AdminRoute - Rota protegida para administradores

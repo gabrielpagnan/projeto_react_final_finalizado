@@ -1,18 +1,6 @@
-// Importação das dependências necessárias
-import { createContext, useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../services/api';
-
-// Criação do contexto de autenticação
-export const AuthContext = createContext();
-
-// Hook personalizado para usar o contexto de autenticação
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
-  }
-  return context;
-};
+import { AuthContext } from './AuthContext';
 
 /**
  * Provedor do contexto de autenticação

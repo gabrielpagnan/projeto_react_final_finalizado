@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { FaUser, FaLock, FaSpinner, FaArrowLeft } from "react-icons/fa";
 import "./Login.css";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from '../../contexts/auth';
+import { AuthContext } from '../../contexts/AuthContext';
 
 /**
  * Componente Login - Página de autenticação

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/auth';
+import { useAuth } from '../../contexts/useAuth';
 import './Home.css';
 import { useState, useEffect } from 'react';
 import api from '../../services/api';

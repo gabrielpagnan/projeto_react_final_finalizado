@@ -25,24 +25,26 @@ function Servicos() {
   const [error, setError] = useState(null); // Estado de erro
 
   /**
+   * Função para buscar os serviços da API
+   */
+  const fetchServicos = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/servicos");
+      setServicos(response.data);
+      setError(null);
+    } catch (err) {
+      setError("Erro ao carregar os serviços. Tente novamente mais tarde.");
+      console.error("Erro ao buscar serviços:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
    * Efeito para carregar os serviços ao montar o componente
-   * Faz a requisição à API e atualiza o estado
    */
   useEffect(() => {
-    const fetchServicos = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get("/servicos");
-        setServicos(response.data);
-        setError(null);
-      } catch (err) {
-        setError("Erro ao carregar os serviços. Tente novamente mais tarde.");
-        console.error("Erro ao buscar serviços:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchServicos();
   }, []);
 

@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 import "./Usuarios.css";
-import { useNavigate } from 'react-router-dom';
 
 /**
  * Componente Usuarios - Página de gerenciamento de usuários
  * Exclusivo para administradores, permite visualizar e gerenciar usuários do sistema
  */
 function Usuarios() {
-  const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
