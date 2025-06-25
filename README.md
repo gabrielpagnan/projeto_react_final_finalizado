@@ -178,3 +178,85 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 ## 👨‍💻 Desenvolvedor
 
 Desenvolvido com ❤️ para facilitar a gestão de barbearias.
+
+----------------------------------------------------------------------
+a) Aplicação React.js
+
+O projeto foi criado usando React.js com Vite como bundler
+Utiliza componentes funcionais e hooks modernos do React
+
+b) Layout Responsivo
+
+O projeto possui um design moderno e responsivo
+Usa CSS modular para estilização
+Adapta-se a diferentes tamanhos de tela (desktop, tablet e mobile)
+Você pode ver isso no arquivo Layout.css que possui media queries para diferentes breakpoints
+
+c) JSON Server
+
+O projeto utiliza o JSON Server para simular uma API REST
+Os dados são armazenados no arquivo data/db.json
+Para iniciar o servidor JSON, você pode usar o comando npm run server
+d) Requisições HTTP
+
+As requisições são feitas através do serviço em src/services/api.js
+Utiliza a biblioteca Axios para fazer as chamadas HTTP
+Todas as operações CRUD são feitas através de requisições HTTP (GET, POST, PUT, DELETE)
+
+e) Tratamento de Exceções
+Todas as requisições HTTP estão envolvidas em blocos try/catch
+Mensagens de erro são exibidas ao usuário quando algo dá errado
+O sistema possui um componente de feedback visual para erros
+
+f) Tela de Login
+
+Localizada em src/Components/Login/Login.jsx
+Possui validação de campos
+Exibe mensagens de erro em caso de falha
+Utiliza contexto de autenticação (src/contexts/auth.jsx)
+
+g) CRUD de Serviços
+Localizado em src/Components/Servicos/Servicos.jsx
+Campos incluem:
+Nome do serviço
+Descrição
+Preço
+Duração
+Categoria/Tipo
+
+h) CRUD de Usuários
+
+Localizado em src/Components/Usuarios/Usuarios.jsx
+Campos incluem:
+Nome
+Email
+Senha
+Tipo (cliente/admin)
+Telefone
+
+i) Navbar e Footer Fixos
+
+O Layout.jsx implementa o padrão SPA (Single Page Application)
+Navbar (src/Components/Navbar/Navbar.jsx) e Footer (src/Components/Footer/Footer.jsx) são fixos
+Apenas a tela de login não possui estes elementos
+O layout é mantido consistente em todas as outras páginas
+
+j) Navegação
+
+Utiliza React Router DOM para gerenciamento de rotas
+As rotas estão definidas em src/routes.jsx
+A navegação pode ser feita através:
+Menu na Navbar
+Links internos
+Botões de ação
+Redirecionamentos após operações CRUD
+O sistema também inclui recursos adicionais de segurança:
+Proteção de rotas (ProtectedRoute.jsx e AdminRoute.jsx)
+Autenticação persistente
+Gerenciamento de sessão
+Validação de formulários
+Para executar o projeto:
+npm install - Instala as dependências
+npm run server - Inicia o JSON Server (em um terminal)
+npm run dev - Inicia o servidor de desenvolvimento (em outro terminal)
+
